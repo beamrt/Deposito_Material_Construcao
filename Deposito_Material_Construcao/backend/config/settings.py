@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'apps.lojas',
     'apps.produtos',
     'apps.transferencias',
-    'apps.usuarios',
+    'apps.usuarios.apps.UsuariosConfig',
     'apps.vendas',
 ]
 
@@ -63,13 +63,17 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+import os  # Garanta que o 'import os' exista no topo do arquivo se não tiver
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Usando os.path para forçar o caminho absoluto até a pasta apps
+        'DIRS': [os.path.join(BASE_DIR, 'apps')],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -86,8 +90,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'construshop',  
+        'USER': 'root',                   
+        'PASSWORD': '',   
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -138,3 +146,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  
     "http://127.0.0.1:5173",  
 ]
+
+
+AUTH_USER_MODEL = 'usuarios.Usuario'

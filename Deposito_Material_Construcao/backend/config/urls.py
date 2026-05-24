@@ -16,18 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-@api_view(['GET'])
-def teste_api(request):
-    return Response({
-        "status": "Sucesso",
-        "mensagem": "O Django REST Framework e o React estão conectados!",
-        "projeto": "Depósito de Materiais de Construção"
-    })
+from apps.usuarios.views import (
+    api_login, api_logout, api_usuarios, 
+    api_usuario_detail, api_recuperar_senha
+)
+from apps.auditoria.views import api_auditoria
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Deixando a rota do admin limpa e padrão
-    path('api/teste/', teste_api),   # Nossa rota de teste da API
+    path('admin/', admin.site.urls),
+    path('api/auth/login/', api_login, name='api_login'),
+    path('api/auth/logout/', api_logout, name='api_logout'),
+    path('api/auth/recuperar-senha/', api_recuperar_senha, name='api_recuperar_senha'),
+    path('api/usuarios/', api_usuarios, name='api_usuarios'),
+    path('api/usuarios/<int:pk>/', api_usuario_detail, name='api_usuario_detail'),
+    path('api/auditoria/', api_auditoria, name='api_auditoria'),
 ]
