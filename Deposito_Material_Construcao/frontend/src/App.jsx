@@ -7,7 +7,7 @@ function App() {
       <GlobalStyles />
       <HomePage />
     </>
-  );
+  )
 }
 
 export default App;
