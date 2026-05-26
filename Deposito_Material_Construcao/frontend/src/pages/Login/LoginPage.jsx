@@ -1,3 +1,4 @@
+import React from 'react';
 import * as log from './styled';
 import { FaGoogle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';

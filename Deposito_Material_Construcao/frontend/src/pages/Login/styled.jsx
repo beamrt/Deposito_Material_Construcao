@@ -151,7 +151,6 @@ export const InformationContainer = styled.div`
   height: 100px;
   margin-left: 10px;
   gap: 20px;
-  border-bottom: 1px solid #fff4e6;
   margin-top: 20px;
 `;
 
@@ -178,21 +177,25 @@ export const Informations = styled.p`
 
 export const WrapperIcons = styled.div`
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 40px;
-  width: 60%;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  width: 50%;
   padding: 20px;
-  margin-top: 20px;
+  margin-top: 5px;
   margin-left: 10px;
+  border-top: 1px solid #fffff0;
 
   .google,
   .apple,
   .face {
     color: #fff4e6;
-    font-size: 30px;
+    font-size: 50px;
     transition: all 0.2s ease-in;
     cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    border: 1px solid #fffff0;
 
     &:hover {
       transform: scale(1.08);
