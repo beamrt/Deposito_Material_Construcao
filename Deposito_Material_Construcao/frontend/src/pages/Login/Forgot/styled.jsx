@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import backgroundSvg from '../../assets/images/background.svg';
-import logo from '../../assets/images/logoazul.png';
+import backgroundSvg from '../../../assets/images/background.svg';
+import logo from '../../../assets/images/logoazul.png';
 
 export const Background = styled.div`
   background-image: url(${backgroundSvg});
@@ -70,8 +70,8 @@ export const ContainerForm = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
-  width: 650px;
-  margin: 20px 50px;
+  width: 450px;
+  margin: 100px 50px;
   padding: 10px;
 `;
 
@@ -86,52 +86,16 @@ export const Form = styled.form`
   padding: 10px;
 `;
 
-export const InputNome = styled.input`
-  width: 60%;
-  padding: 12px;
-  border: 2px solid #ccc;
-  background: #d9d9d9;
-  border-radius: 7px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  font-size: 15px;
-  transition: all 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: #df6c01;
-  }
-`;
-
-export const InputEmail = styled.input`
-  width: 60%;
-  padding: 12px;
-  border: 2px solid #ccc;
-  background: #d9d9d9;
-  border-radius: 7px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  font-size: 15px;
-  transition: all 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: #df6c01;
-  }
-`;
-
 export const InputSenha = styled.input`
-  width: 60%;
+  width: 100%;
   padding: 12px;
-  border: 2px solid #ccc;
+  border: 2px solid #003d74;
   background: #d9d9d9;
   border-radius: 7px;
-  font-size: 15px;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-style: normal;
+  font-size: 15px;
   transition: all 0.2s;
 
   &:focus {
@@ -141,15 +105,15 @@ export const InputSenha = styled.input`
 `;
 
 export const InputConfirmar = styled.input`
-  width: 60%;
+  width: 100%;
   padding: 12px;
-  border: 2px solid #ccc;
+  border: 2px solid #003d74;
   background: #d9d9d9;
   border-radius: 7px;
-  font-size: 15px;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-style: normal;
+  font-size: 15px;
   transition: all 0.2s;
 
   &:focus {
@@ -179,22 +143,23 @@ export const ButtonSubmit = styled.button`
     filter: brightness(90%);
   }
 `;
-
 export const InformationContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 60%;
-  height: 50px;
+  height: 100px;
   margin-left: 10px;
   gap: 20px;
   margin-top: 20px;
+  border-top: 1px solid #d9d9d9;
 `;
 
 export const Informations = styled.p`
   font-family: 'Poppins', sans-serif;
   font-weight: 200;
   font-style: normal;
-  color: #fff4e6;
+  color: #fffff0;
+  margin-top: 20px;
 
   span {
     display: inline-block;
@@ -207,34 +172,6 @@ export const Informations = styled.p`
 
     &:hover {
       transform: scale(1.06);
-    }
-  }
-`;
-
-export const WrapperIcons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 30px;
-  width: 50%;
-  padding: 20px;
-  margin-top: 5px;
-  margin-left: 10px;
-  border-top: 1px solid #fffff0;
-
-  .google,
-  .apple,
-  .face {
-    color: #fff4e6;
-    font-size: 50px;
-    transition: all 0.2s ease-in;
-    cursor: pointer;
-    padding: 12px;
-    border-radius: 50%;
-    border: 1px solid #fffff0;
-
-    &:hover {
-      transform: scale(1.08);
     }
   }
 `;
