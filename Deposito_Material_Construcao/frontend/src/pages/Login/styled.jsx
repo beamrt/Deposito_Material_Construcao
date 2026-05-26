@@ -71,7 +71,7 @@ export const ContainerForm = styled.div`
   justify-content: flex-start;
   flex-direction: column;
   width: 650px;
-  margin: 60px 30px;
+  margin: 60px 50px;
   padding: 10px;
 `;
 
