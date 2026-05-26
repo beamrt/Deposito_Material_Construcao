@@ -13,8 +13,8 @@ export default function Login() {
       <cad.ContainerLogo />
 
       <cad.TitleContainer>
-        <cad.Title>Olá, Seja bem-vindo(a)!</cad.Title>
-        <cad.Subtitle>Faça login para continuar</cad.Subtitle>
+        <cad.Title>Vamos criar a sua conta?</cad.Title>
+        <cad.Subtitle>Preencha as informações abaixo</cad.Subtitle>
       </cad.TitleContainer>
 
       <cad.ContainerForm>

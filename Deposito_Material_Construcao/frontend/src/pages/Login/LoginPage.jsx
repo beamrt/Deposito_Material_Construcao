@@ -29,7 +29,7 @@ export default function Login() {
           <log.Informations onClick={() => navigate('/cadastro')}>
             É novo por aqui? <span>Cadastre-se</span>
           </log.Informations>
-          <log.Informations>
+          <log.Informations onClick={() => navigate('/login/forgot')}>
             Esqueceu a sua senha? Clique <span>AQUI</span>
           </log.Informations>
         </log.InformationContainer>
