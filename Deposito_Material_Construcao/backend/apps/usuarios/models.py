@@ -76,7 +76,7 @@ class Usuario(AbstractBaseUser):
 
 
 class UsuarioLoja(models.Model):
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, db_column='id_usuario', primary_key=True)
+    id_usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, db_column='id_usuario', primary_key=True)
     id_loja = models.ForeignKey('lojas.Loja', on_delete=models.CASCADE, db_column='id_loja')
 
     class Meta:
