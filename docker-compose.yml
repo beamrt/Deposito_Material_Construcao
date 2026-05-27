@@ -24,3 +24,54 @@ services:
 
       stdin_open: true # Para verificar os logs do react
       tty: true
+
+# Backend
+    backend:
+      build: ./Deposito_Material_Construcao/backend # Dockerfile Django
+      container_name: django_backend
+      command: python manage.py runserver 0.0.0.0:8000
+      ports:
+      - "8000:8000"
+      volumes:
+      - ./Deposito_Material_Construcao/backend:/app
+      environment:
+      - DEBUG=1
+      # Variaveis para o Django se conectar aos bancos na rede interna do Docker
+      - DB_ENGINE=django.db.backends.mysql
+      - DB_NAME=deposito_db
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_HOST=mysql_db
+      - DB_PORT=3306
+      - MONGO_URI=mongodb://mongo_db:27017/deposito_nosql
+      depends_on:
+      - mysql_db
+      - mongo_db
+
+      # Banco relacional
+    mysql_db:
+      image: mysql:8.0
+      container_name: mysql_database
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: rootpassword
+        MYSQL_DATABASE: deposito_db
+      ports:
+      - "3306:3306"
+      volumes:
+      - mysql_data:/var/lib/mysql
+
+    # Banco não relacional
+    mongo_db:
+      image: mongo:latest
+      container_name: mongodb_database
+      restart: always
+      ports:
+      - "27017:27017"
+      volumes:
+      - "mongo_data:/data/db"
+
+    # Volumes persistentes
+volumes:
+  mysql_data:
+  mongodb_data:
