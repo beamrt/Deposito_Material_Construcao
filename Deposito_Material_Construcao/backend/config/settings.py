@@ -91,12 +91,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'construshop',  
-        'USER': 'root',                   
-        'PASSWORD': '',   
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
+        'NAME': os.environ.get('DB_NAME', 'deposito_db'),  
+        'USER': os.environ.get('DB_USER', 'root'),                   
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'rootpassword'),   
+        'HOST': os.environ.get('DB_HOST', 'mysql_db'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
 
