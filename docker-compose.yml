@@ -74,4 +74,4 @@ services:
     # Volumes persistentes
 volumes:
   mysql_data:
-  mongodb_data:
+  mongo_data:
