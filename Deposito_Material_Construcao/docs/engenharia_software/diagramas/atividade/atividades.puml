@@ -1,0 +1,158 @@
+@startuml Constrular_Atividades
+
+skinparam wrapWidth 150
+skinparam maxMessageSize 150
+
+|Usuário|
+start
+:Acessa o Sistema Constrular;
+
+|Sistema|
+if (Usuário Autenticado?) then (Não)
+    :Retorna mensagem de erro (Acesso negado);
+    stop
+else (Sim)
+endif
+
+|Usuário|
+:Visualiza Menu Principal;
+
+split
+    ' ==========================================
+    ' RF001: Cadastro de Produtos
+    ' ==========================================
+    :Acessa Cadastro de Produtos;
+    :Preenche dados (nome, preço, etc.);
+    |Sistema|
+    :Valida dados inseridos;
+    if (Campos vazios ou Produto já existe?) then (Sim)
+        :Exibe mensagem de erro;
+        detach
+    else (Não)
+        |Banco de Dados|
+        :Salva produto no banco;
+        |Sistema|
+        :Exibe mensagem de sucesso;
+    endif
+
+split again
+    ' ==========================================
+    ' RF002: Controle de Estoque
+    ' ==========================================
+    |Usuário|
+    :Acessa tela de Estoque;
+    :Seleciona Entrada/Saída e insere Qtd;
+    |Sistema|
+    :Valida dados inseridos;
+    if (Qtd == 0 ou Saída <= 0?) then (Sim)
+        :Exibe mensagem de erro;
+        detach
+    else (Não)
+        |Banco de Dados|
+        :Salva dados;
+        :Atualiza estoque;
+        |Sistema|
+        :Exibe quantidade disponível;
+        :Exibe mensagem de sucesso;
+    endif
+
+split again
+    ' ==========================================
+    ' RF003: Gestão de Múltiplas Lojas
+    ' ==========================================
+    |Usuário|
+    :Acessa Cadastro de Filiais;
+    :Preenche dados (nome, CNPJ, etc.);
+    |Sistema|
+    :Valida dados inseridos;
+    if (Dados inválidos, vazios ou Filial já existe?) then (Sim)
+        :Exibe mensagem de erro;
+        detach
+    else (Não)
+        |Banco de Dados|
+        :Salva dados da Filial;
+        :Gera estoque próprio da filial;
+        |Sistema|
+        :Permite visualizar estoque da loja;
+        :Exibe mensagem de sucesso;
+    endif
+
+split again
+    ' ==========================================
+    ' RF004: Registro de Vendas (PDV)
+    ' ==========================================
+    |Usuário|
+    :Acessa o PDV;
+    :Seleciona produtos e quantidades;
+    |Sistema|
+    :Calcula valor total;
+    :Valida dados inseridos;
+    if (Faltam dados ou Produto inexistente?) then (Sim)
+        :Exibe mensagem de erro;
+        detach
+    else (Não)
+        |Banco de Dados|
+        :Salva dados da venda;
+        :Atualiza estoque;
+        |Sistema|
+        :Exibe mensagem de sucesso;
+        |Usuário|
+        if (Solicita cancelamento/reembolso?) then (Sim)
+            |Sistema|
+            :Processa estorno;
+            |Banco de Dados|
+            :Reverte estoque e venda;
+        else (Não)
+        endif
+    endif
+
+split again
+    ' ==========================================
+    ' RF005: Controle de Usuários
+    ' ==========================================
+    |Usuário|
+    :Acessa Cadastro de Funcionários;
+    :Preenche dados (nome, email, CPF, etc.);
+    |Sistema|
+    :Valida email e CPF;
+    if (Email/CPF inválido ou já cadastrado?) then (Sim)
+        :Exibe mensagem de erro;
+        detach
+    else (Não)
+        |Banco de Dados|
+        :Salva funcionário;
+        |Sistema|
+        :Exibe mensagem de sucesso;
+    endif
+
+split again
+    ' ==========================================
+    ' RF006 & RF007: Relatórios e Financeiro
+    ' ==========================================
+    |Usuário|
+    :Acessa Relatórios / Financeiro;
+    :Informa período ou dados financeiros;
+    |Sistema|
+    :Valida dados inseridos;
+    if (Faltam dados/período?) then (Sim)
+        :Solicita preenchimento;
+        detach
+    else (Não)
+        |Banco de Dados|
+        :Consulta registros / Associa vendas;
+        |Sistema|
+        if (Falha no cálculo ou Sem dados?) then (Sim)
+            :Exibe mensagem de erro/aviso;
+            detach
+        else (Não)
+            :Calcula Lucro/Prejuízo;
+            :Exibe Relatório / Informações na tela;
+        endif
+    endif
+end split
+
+|Usuário|
+:Retorna ao Menu ou Encerra Sessão;
+stop
+
+@enduml
