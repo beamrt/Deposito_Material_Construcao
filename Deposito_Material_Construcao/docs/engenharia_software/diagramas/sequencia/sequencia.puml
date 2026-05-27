@@ -1,0 +1,199 @@
+@startuml Constrular_Sequencia
+
+skinparam maxMessageSize 150
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+title Diagrama de Sequência - SaaS Constrular
+
+actor "Funcionário / Usuário" as Funcionario
+actor "Administrador" as Admin
+box "Frontend" #LightCyan
+participant "Interface (UI)" as UI
+end box
+box "Backend" #LightYellow
+participant "Sistema (Controller/Validador)" as Backend
+end box
+database "Banco de Dados" as DB
+
+' ==========================================
+== Cadastro de Produtos ==
+' ==========================================
+autonumber
+Funcionario -> UI: Acessa a tela de cadastro
+Funcionario -> UI: Preenche campos (nome, preço, categoria, descrição, tipo)
+UI -> Backend: Envia dados para validação e cadastro
+alt Campos obrigatórios vazios
+    Backend --> UI: Retorna erro (campo obrigatório ausente)
+    UI --> Funcionario: Exibe mensagem de erro
+else Produto já cadastrado
+    Backend --> UI: Retorna erro (produto já existe)
+    UI --> Funcionario: Exibe mensagem de erro
+else Dados Válidos
+    Backend -> DB: Salva dados do produto
+    DB --> Backend: Confirma gravação
+    Backend --> UI: Retorna sucesso
+    UI --> Funcionario: Exibe mensagem de sucesso
+end
+
+' ==========================================
+== Controle de Estoque ==
+' ==========================================
+autonumber
+Funcionario -> UI: Acessa a tela de estoque
+Funcionario -> UI: Clica em entrada ou saída e insere dados
+UI -> Backend: Envia requisição de movimentação
+alt Quantidade inserida == 0
+    Backend --> UI: Retorna erro (quantidade inexistente)
+    UI --> Funcionario: Exibe mensagem de erro
+else Saída <= 0
+    Backend --> UI: Retorna erro (saída inválida)
+    UI --> Funcionario: Exibe mensagem de erro
+else Dados Válidos
+    Backend -> DB: Salva movimentação no banco
+    Backend -> DB: Atualiza estoque (venda/transferência)
+    DB --> Backend: Confirmação e total atualizado
+    Backend --> UI: Retorna sucesso e saldo atual
+    UI --> Funcionario: Exibe quantidade disponível
+    UI --> Funcionario: Exibe mensagem de sucesso
+end
+
+' ==========================================
+== Gestão de Múltiplas Lojas ==
+' ==========================================
+autonumber
+Funcionario -> UI: Acessa tela de cadastro de filiais
+Funcionario -> UI: Preenche campos (nome, CNPJ, telefone, email)
+UI -> Backend: Envia dados para validação
+alt Campos obrigatórios vazios
+    Backend --> UI: Retorna erro (campo obrigatório)
+else Filial já cadastrada
+    Backend --> UI: Retorna erro (filial já existe)
+else CNPJ inexistente/inválido
+    Backend --> UI: Retorna erro (CNPJ inválido)
+else Email inválido
+    Backend --> UI: Retorna erro (Email incorreto)
+else Dados Válidos
+    Backend -> DB: Cria escopo de estoque próprio da loja
+    Backend -> DB: Valida e salva os dados no banco
+    DB --> Backend: Confirmação
+    Backend --> UI: Retorna sucesso
+    UI --> Funcionario: Permite visualizar estoque por loja
+    UI --> Funcionario: Exibe mensagem de sucesso
+end
+
+' ==========================================
+== Registro de Vendas (PDV) ==
+' ==========================================
+autonumber
+Funcionario -> UI: Acessa o PDV
+alt Usuário não autenticado
+    UI --> Funcionario: Bloqueia acesso (Apenas autenticados)
+else Usuário Autenticado
+    Funcionario -> UI: Seleciona produtos e quantidades
+    UI -> Backend: Calcula valor total da venda
+    alt Produto não adicionado
+        Backend --> UI: Retorna erro (Não existe produto)
+        UI --> Funcionario: Exibe erro
+    else Valor ou Quantidade não preenchidos
+        Backend --> UI: Retorna erro (Obrigatoriedade de preenchimento)
+        UI --> Funcionario: Exibe erro
+    else Dados Válidos
+        Backend -> DB: Valida e salva os dados da venda
+        Backend -> DB: Atualiza o estoque automaticamente
+        DB --> Backend: Confirma gravação
+        Backend --> UI: Retorna sucesso
+        UI --> Funcionario: Exibe mensagem de sucesso
+        opt Cancelamento / Reembolso
+            Funcionario -> UI: Solicita cancelamento ou reembolso
+            UI -> Backend: Processa estorno
+            Backend -> DB: Atualiza registros de venda e estoque
+            Backend --> UI: Confirmação
+            UI --> Funcionario: Exibe sucesso no cancelamento
+        end
+    end
+end
+
+' ==========================================
+== Controle de Usuários (Funcionários) ==
+' ==========================================
+autonumber
+Admin -> UI: Acessa a tela de cadastro
+Admin -> UI: Preenche campos (nome, email, senha, CPF)
+UI -> Backend: Envia para validação (ex: formatação de e-mail)
+alt E-mail inválido
+    Backend --> UI: Retorna erro (Preencha o e-mail corretamente)
+    UI --> Admin: Exibe mensagem de erro
+else E-mail já cadastrado
+    Backend --> UI: Retorna erro (E-mail já utilizado)
+    UI --> Admin: Exibe mensagem de erro
+else CPF inválido
+    Backend --> UI: Retorna erro (CPF não existe)
+    UI --> Admin: Exibe mensagem de erro
+else Dados Válidos
+    Backend -> DB: Salva dados do funcionário
+    DB --> Backend: Confirma gravação
+    Backend --> UI: Retorna sucesso
+    UI --> Admin: Exibe mensagem de sucesso
+end
+
+' ==========================================
+== Relatórios ==
+' ==========================================
+autonumber
+Funcionario -> UI: Acessa tela de relatório
+Funcionario -> UI: Seleciona tipo (vendas ou estoque)
+Funcionario -> UI: Informa o período desejado
+UI -> Backend: Envia dados para validação e consulta
+alt Nenhum período informado
+    Backend --> UI: Retorna erro
+    UI --> Funcionario: Solicita preenchimento das datas
+else
+    Backend -> DB: Consulta dados no período
+    alt Falha na geração
+        DB --> Backend: Erro de processamento
+        Backend --> UI: Retorna falha
+        UI --> Funcionario: Exibe mensagem de erro
+    else Sem dados registrados
+        DB --> Backend: Retorno vazio
+        Backend --> UI: Retorna aviso
+        UI --> Funcionario: Aviso (Não existem dados disponíveis)
+    else Dados encontrados
+        DB --> Backend: Retorna dados do relatório
+        Backend --> UI: Compila informações
+        UI --> Funcionario: Exibe o relatório na tela
+    end
+end
+
+' ==========================================
+== Gestão Financeira ==
+' ==========================================
+autonumber
+Funcionario -> UI: Acessa tela de gestão financeira
+Funcionario -> UI: Registra informações financeiras
+UI -> Backend: Envia informações
+alt Campo obrigatório não preenchido
+    Backend --> UI: Retorna erro
+    UI --> Funcionario: Solicita preenchimento dos dados
+else Dados Válidos
+    Backend -> Backend: Valida os dados inseridos
+    Backend -> DB: Busca vendas realizadas
+    alt Sem registros financeiros
+        DB --> Backend: Nenhum dado
+        Backend --> UI: Retorna aviso
+        UI --> Funcionario: Informa que não existem dados disponíveis
+    else Com registros
+        DB --> Backend: Retorna vendas
+        Backend -> Backend: Associa automaticamente vendas ao financeiro
+        Backend -> Backend: Calcula lucro e prejuízo
+        alt Falha no cálculo financeiro
+            Backend --> UI: Retorna falha
+            UI --> Funcionario: Exibe mensagem de erro
+        else Sucesso
+            Backend --> UI: Retorna consolidação financeira
+            UI --> Funcionario: Exibe as informações financeiras ao usuário
+        end
+    end
+end
+
+@enduml
