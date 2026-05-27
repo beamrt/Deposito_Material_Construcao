@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from apps.usuarios.views import (
     api_login, api_logout, api_usuarios, 
-    api_usuario_detail, api_recuperar_senha
+    api_usuario_detail, api_recuperar_senha,
+    api_alternar_unidade  
 )
 from apps.auditoria.views import api_auditoria
 
@@ -27,6 +28,10 @@ urlpatterns = [
     path('api/auth/login/', api_login, name='api_login'),
     path('api/auth/logout/', api_logout, name='api_logout'),
     path('api/auth/recuperar-senha/', api_recuperar_senha, name='api_recuperar_senha'),
+    
+
+    path('api/auth/alternar-unidade/', api_alternar_unidade, name='api_alternar_unidade'),
+    
     path('api/usuarios/', api_usuarios, name='api_usuarios'),
     path('api/usuarios/<int:pk>/', api_usuario_detail, name='api_usuario_detail'),
     path('api/auditoria/', api_auditoria, name='api_auditoria'),
