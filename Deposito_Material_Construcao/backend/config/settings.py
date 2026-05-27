@@ -59,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.usuarios.views.TenantMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -149,3 +150,6 @@ CORS_ALLOWED_ORIGINS = [
 
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
+
+SESSION_COOKIE_AGE = 1800  # Tempo em segundos para fecha a tela (30 minutos)
+SESSION_SAVE_EVERY_REQUEST = True  
