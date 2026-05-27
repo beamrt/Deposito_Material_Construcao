@@ -1,0 +1,26 @@
+# Frontend
+
+version: '3.8'
+
+services:
+    # service name
+    frontend:
+      build: ./Deposito_Material_Construcao/frontend
+
+      # Nome do container
+      container_name: react_frontend
+
+      # A porta que será utilizada
+      ports:
+        - "3000:3000"
+      
+      volumes:
+        - ./Deposito_Material_Construcao/frontend:/app # Hot Reload para sincronizar os códigos locais e o container
+        - /app/node_modules # Garantia que a pasta node_modules não vai ser sobrescrita pela node_modules local
+      
+      environment:
+        - CHOKIDAR_USEPOLLING=true # Variáveis de ambiente, para garantir que o React perceba mudanças no Windows/Docker
+        - WATCHPACK_POLLING=true
+
+      stdin_open: true # Para verificar os logs do react
+      tty: true
