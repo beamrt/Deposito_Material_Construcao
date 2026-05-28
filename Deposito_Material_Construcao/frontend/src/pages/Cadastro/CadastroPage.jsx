@@ -23,14 +23,14 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('api/usuarios', data);
+      const response = await axios.post('api/usuarios/', data);
 
       toast.success(response.data.message);
       navigate('/login');
       reset();
     } catch (e) {
       if (e.response) {
-        toast.error(error.response.data.message);
+        toast.error(e.response.data.message);
       }
 
       return toast.error('Não foi possível se conectar com o servidor');
@@ -76,7 +76,11 @@ export default function Login() {
             placeholder="Senha"
             {...register('senha')}
           />
-          <cad.InputConfirmar type="password" placeholder="Confirmar Senha" />
+          <cad.InputConfirmar
+            type="password"
+            placeholder="Confirmar Senha"
+            {...register('confirmar_senha')}
+          />
 
           <cad.ButtonSubmit disabled={isLoading}>
             {isLoading ? 'Carregando...' : 'Cadastrar'}

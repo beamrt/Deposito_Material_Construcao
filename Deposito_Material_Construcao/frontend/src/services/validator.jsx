@@ -9,4 +9,8 @@ export const userSchema = yup.object().shape({
     .required('O e-mail é obrigatório'),
 
   senha: yup.string().required('A senha é obrigatória'),
+
+  confirmar_senha: yup
+    .string()
+    .required('A confirmação da senha é obrigatória'),
 });
