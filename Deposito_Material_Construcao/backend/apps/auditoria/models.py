@@ -9,6 +9,8 @@ class AuditLog(models.Model):
     id_registro = models.IntegerField(null=True, blank=True)
     data_hora = models.DateTimeField(auto_now_add=True, db_column='data_hora')
     detalhes = models.TextField(null=True, blank=True)
+    
+    tenant_id = models.IntegerField(null=True, blank=True, db_column='tenant_id')
 
     class Meta:
         db_table = 'auditoria'

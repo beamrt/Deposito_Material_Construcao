@@ -59,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.usuarios.views.TenantMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -90,12 +91,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'construshop',  
-        'USER': 'root',                   
-        'PASSWORD': '',   
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
+        'NAME': os.environ.get('DB_NAME', 'deposito_db'),  
+        'USER': os.environ.get('DB_USER', 'root'),                   
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'rootpassword'),   
+        'HOST': os.environ.get('DB_HOST', 'mysql_db'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
 
@@ -149,3 +150,6 @@ CORS_ALLOWED_ORIGINS = [
 
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
+
+SESSION_COOKIE_AGE = 1800  # Tempo em segundos para fecha a tela (30 minutos)
+SESSION_SAVE_EVERY_REQUEST = True  
