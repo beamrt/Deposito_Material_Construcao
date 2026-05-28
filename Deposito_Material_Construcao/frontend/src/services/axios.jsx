@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-// BaseURL do axios indefinida *
+const baseURL = process.env.REACT_APP_BASE_URL;
+
+// BaseURL do axios definida
 export default axios.create({
-  baseURL: '',
+  baseURL,
 });

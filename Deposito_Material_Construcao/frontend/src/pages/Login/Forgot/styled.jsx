@@ -122,6 +122,24 @@ export const InputConfirmar = styled.input`
   }
 `;
 
+export const InputEmail = styled.input`
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #003d74;
+  background: #d9d9d9;
+  border-radius: 7px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 15px;
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #df6c01;
+  }
+`;
+
 export const ButtonSubmit = styled.button`
   padding: 10px;
   width: 170px;

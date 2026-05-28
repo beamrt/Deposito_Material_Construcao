@@ -15,6 +15,7 @@ export default function ForgotPass() {
 
       <forg.ContainerForm>
         <forg.Form>
+          <forg.InputEmail type="email" placeholder="Digite o seu e-mail" />
           <forg.InputSenha type="password" placeholder="Digite a nova senha" />
           <forg.InputConfirmar
             type="password"

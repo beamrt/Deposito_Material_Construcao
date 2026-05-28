@@ -1,12 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { toast } from 'react-toastify';
+
 import * as cad from './styled';
 import { FaGoogle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
 import { FaApple } from 'react-icons/fa';
+import axios from '../../services/axios';
+import { userSchema } from '../../services/validator';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { register, handleSubmit, reset } = useForm({
+    resolver: yupResolver(userSchema),
+  });
+
+  const handleFormSubmit = async (data) => {
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post('api/usuarios', data);
+
+      toast.success(response.data.message);
+      navigate('/login');
+      reset();
+    } catch (e) {
+      if (e.response) {
+        toast.error(error.response.data.message);
+      }
+
+      return toast.error('Não foi possível se conectar com o servidor');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onInvalid = (validationErrors) => {
+    Object.values(validationErrors).forEach((e) => {
+      toast.error(e.message);
+    });
+  };
 
   return (
     <cad.Background>
@@ -18,13 +55,32 @@ export default function Login() {
       </cad.TitleContainer>
 
       <cad.ContainerForm>
-        <cad.Form>
-          <cad.InputNome type="text" placeholder="Nome Completo" />
-          <cad.InputEmail type="email" placeholder="E-mail" />
-          <cad.InputSenha type="password" placeholder="Senha" />
+        <cad.Form
+          method="POST"
+          action=""
+          onSubmit={handleSubmit(handleFormSubmit, onInvalid)}
+          novalidate
+        >
+          <cad.InputNome
+            type="text"
+            placeholder="Nome Completo"
+            {...register('nome')}
+          />
+          <cad.InputEmail
+            type="text"
+            placeholder="E-mail"
+            {...register('email')}
+          />
+          <cad.InputSenha
+            type="password"
+            placeholder="Senha"
+            {...register('senha')}
+          />
           <cad.InputConfirmar type="password" placeholder="Confirmar Senha" />
 
-          <cad.ButtonSubmit>Cadastrar</cad.ButtonSubmit>
+          <cad.ButtonSubmit disabled={isLoading}>
+            {isLoading ? 'Carregando...' : 'Cadastrar'}
+          </cad.ButtonSubmit>
         </cad.Form>
 
         <cad.InformationContainer>
