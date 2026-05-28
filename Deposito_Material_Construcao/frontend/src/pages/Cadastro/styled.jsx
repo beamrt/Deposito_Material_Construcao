@@ -178,6 +178,11 @@ export const ButtonSubmit = styled.button`
     transform: scale(1.05);
     filter: brightness(90%);
   }
+
+  &:disabled {
+    filter: brightness(70%);
+    cursor: not-allowed;
+  }
 `;
 
 export const InformationContainer = styled.div`

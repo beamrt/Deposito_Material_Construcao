@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+
 import * as log from './styled';
 import { FaGoogle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
