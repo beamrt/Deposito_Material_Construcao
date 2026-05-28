@@ -83,13 +83,13 @@ def api_logout(request):
 
 @csrf_exempt
 def api_usuarios(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'error': 'Não autorizado'}, status=401)
-    
-    if request.user.tipo_usuario not in ['MASTER', 'ADMIN', 'GERENTE']:
-        return JsonResponse({'error': 'Acesso proibido para este perfil'}, status=403)
-
     if request.method == 'GET':
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': 'Não autorizado'}, status=401)
+        
+        if request.user.tipo_usuario not in ['MASTER', 'ADMIN', 'GERENTE']:
+            return JsonResponse({'error': 'Acesso proibido para este perfil'}, status=403)
+
         if request.user.tipo_usuario in ['ADMIN', 'MASTER']:
             usuarios = Usuario.objects.all()
         else:
@@ -110,40 +110,55 @@ def api_usuarios(request):
         try:
             body = json.loads(request.body)
             senha = body.get('senha')
+            confirmacao_senha = body.get('confirmacao_senha')
+            cpf = body.get('cpf')
+            email = body.get('email')
+            nome = body.get('nome')
         except Exception:
             return JsonResponse({'error': 'JSON inválido'}, status=400)
         
-        if not senha or len(senha) < 8 or not re.search(r"[A-Z]", senha) or not re.search(r"[0-9]", senha):
+        if not nome or not email or not senha or not confirmacao_senha or not cpf:
+            return JsonResponse({
+                'error': 'Todos os campos (nome, email, cpf, senha e confirmacao_senha) são obrigatórios.'
+            }, status=400)
+        
+        if senha != confirmacao_senha:
+            return JsonResponse({'error': 'A senha e a confirmação de senha não coincidem.'}, status=400)
+        
+        if len(senha) < 8 or not re.search(r"[A-Z]", senha) or not re.search(r"[0-9]", senha):
             return JsonResponse({
                 'error': 'A senha deve possuir no mínimo 8 caracteres, contendo ao menos 1 letra maiúscula e 1 número.'
             }, status=400)
 
-        if Usuario.objects.filter(email=body.get('email')).exists():
+        if Usuario.objects.filter(email=email).exists():
             return JsonResponse({'error': 'Este e-mail já está cadastrado.'}, status=400)
 
-        id_loja = body.get('id_loja')
-        if not id_loja and body.get('tipo_usuario') != 'MASTER':
-            return JsonResponse({'error': 'Vínculo com unidade/tenant é obrigatório.'}, status=400)
-
-        user = Usuario.objects.create_user(
-            email=body.get('email'),
-            nome=body.get('nome'),
-            cpf=body.get('cpf'),
-            password=senha,
-            tipo_usuario=body.get('tipo_usuario', 'FUNCIONARIO')
-        )
-        user.ativo = True
-        user.save()
+        try:
+            user = Usuario.objects.create_user(
+                email=email,
+                nome=nome,
+                cpf=cpf,
+                password=senha,
+                tipo_usuario='FUNCIONARIO'
+            )
+            user.ativo = True
+            user.save()
+        except ValueError as err_modelo:
+            return JsonResponse({'error': str(err_modelo)}, status=400)
+        except Exception:
+            return JsonResponse({'error': 'Erro interno ao salvar os dados do usuário.'}, status=500)
         
+        id_loja = body.get('id_loja')
         if id_loja:
             loja_obj = get_object_or_404(Loja, pk=id_loja)
             UsuarioLoja.objects.create(id_usuario=user, id_loja=loja_obj)
         
+        usuario_autor = request.user if request.user.is_authenticated else user
         AuditLog.objects.create(
-            id_usuario=request.user, acao="Criou novo usuário", tabela_afetada="usuario", 
-            id_registro=user.id_usuario, detalhes=f"Criou o usuário {user.email}"
+            id_usuario=usuario_autor, acao="Autocadastro realizado", tabela_afetada="usuario", 
+            id_registro=user.id_usuario, detalhes=f"O usuário comum {user.email} realizou o cadastro e aguarda definição de unidade."
         )
-        return JsonResponse({'message': 'Usuário criado com sucesso'}, status=201)
+        return JsonResponse({'message': 'Usuário cadastrado com sucesso! Aguarde a liberação de acessos pelo administrador.'}, status=201)
 
 @csrf_exempt
 def api_usuario_detail(request, pk):
