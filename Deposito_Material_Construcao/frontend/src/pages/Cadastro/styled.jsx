@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import backgroundSvg from '../../assets/images/background.svg';
 import logo from '../../assets/images/logoazul.png';
 
+import { PatternFormat } from 'react-number-format';
+
 export const Background = styled.div`
   background-image: url(${backgroundSvg});
   background-position: center;
@@ -158,7 +160,7 @@ export const InputConfirmar = styled.input`
   }
 `;
 
-export const InputCPF = styled.input`
+export const InputCPF = styled(PatternFormat)`
   width: 60%;
   padding: 12px;
   border: 2px solid #ccc;
