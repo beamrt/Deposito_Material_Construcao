@@ -25,6 +25,7 @@ class UsuarioManager(BaseUserManager):
 
 class Usuario(AbstractBaseUser):
     TIPO_CHOICES = [
+        ('MASTER', 'MASTER/MATRIZ'),
         ('ADMIN', 'ADMIN'),
         ('GERENTE', 'GERENTE'),
         ('FUNCIONARIO', 'FUNCIONARIO'),
@@ -52,6 +53,7 @@ class Usuario(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
     @property
     def is_active(self):
         return self.ativo
@@ -62,17 +64,17 @@ class Usuario(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        return self.tipo_usuario in ['ADMIN', 'GERENTE']
+        return self.tipo_usuario in ['ADMIN', 'GERENTE', 'MASTER']
 
     @property
     def is_superuser(self):
         return self.tipo_usuario == 'ADMIN'
 
     def has_perm(self, perm, obj=None):
-        return self.tipo_usuario == 'ADMIN'
+        return self.tipo_usuario in ['ADMIN', 'MASTER']
 
     def has_module_perms(self, app_label):
-        return self.tipo_usuario == 'ADMIN'
+        return self.tipo_usuario in ['ADMIN', 'MASTER']
 
 
 class UsuarioLoja(models.Model):
