@@ -30,7 +30,8 @@ export default function Login() {
       reset();
     } catch (e) {
       if (e.response) {
-        toast.error(e.response.data.message);
+        toast.error(e.response.data.error);
+        return;
       }
 
       return toast.error('Não foi possível se conectar com o servidor');
@@ -59,7 +60,7 @@ export default function Login() {
           method="POST"
           action=""
           onSubmit={handleSubmit(handleFormSubmit, onInvalid)}
-          novalidate
+          noValidate
         >
           <cad.InputNome
             type="text"
@@ -71,6 +72,7 @@ export default function Login() {
             placeholder="E-mail"
             {...register('email')}
           />
+          <cad.InputCPF type="text" placeholder="CPF" {...register('cpf')} />
           <cad.InputSenha
             type="password"
             placeholder="Senha"
@@ -79,7 +81,7 @@ export default function Login() {
           <cad.InputConfirmar
             type="password"
             placeholder="Confirmar Senha"
-            {...register('confirmar_senha')}
+            {...register('confirmacao_senha')}
           />
 
           <cad.ButtonSubmit disabled={isLoading}>

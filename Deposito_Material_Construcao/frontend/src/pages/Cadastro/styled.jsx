@@ -158,6 +158,24 @@ export const InputConfirmar = styled.input`
   }
 `;
 
+export const InputCPF = styled.input`
+  width: 60%;
+  padding: 12px;
+  border: 2px solid #ccc;
+  background: #d9d9d9;
+  border-radius: 7px;
+  font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #df6c01;
+  }
+`;
+
 export const ButtonSubmit = styled.button`
   padding: 10px;
   width: 170px;

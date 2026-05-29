@@ -11,10 +11,12 @@ export const userSchema = yup.object().shape({
   senha: yup
     .string()
     .required('A senha é obrigatória.')
-    .min(6, 'A senha precisa ter no mínimo 6 caracteres.'),
+    .min(8, 'A senha precisa ter no mínimo 8 caracteres.'),
 
-  confirmar_senha: yup
+  confirmacao_senha: yup
     .string()
     .required('A confirmação da senha é obrigatória.')
     .oneOf([yup.ref('senha')], 'As senhas não conferem. Digite novamente.'),
+
+  cpf: yup.string().required('O CPF é obrigatório'),
 });
