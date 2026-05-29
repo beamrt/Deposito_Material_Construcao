@@ -145,7 +145,8 @@ def api_usuarios(request):
             user.save()
         except ValueError as err_modelo:
             return JsonResponse({'error': str(err_modelo)}, status=400)
-        except Exception:
+        except Exception as e:
+            print(f'ERRO FATAL AO CRIAR O USUÁRIO: {repr(e)}')
             return JsonResponse({'error': 'Erro interno ao salvar os dados do usuário.'}, status=500)
         
         id_loja = body.get('id_loja')
