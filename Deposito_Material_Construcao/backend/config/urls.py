@@ -29,7 +29,9 @@ from apps.estoque.views import (
     api_dashboard_estoque
 )
 
+
 urlpatterns = [
+    # Sistema de autenticação (Cadastro, Login e Auditoria) 
     path('admin/', admin.site.urls),
     path('api/auth/login/', api_login, name='api_login'),
     path('api/auth/logout/', api_logout, name='api_logout'),

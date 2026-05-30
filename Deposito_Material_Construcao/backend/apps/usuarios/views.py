@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.db import IntegrityError
 
 from apps.auditoria.models import AuditLog
 from .models import Usuario, UsuarioLoja
@@ -24,7 +25,7 @@ def api_login(request):
     except Exception:
         return JsonResponse({'error': 'JSON inválido'}, status=400)
 
-    if not email or not senha or not id_loja_selecionada:
+    if not email or not senha:
         return JsonResponse({'error': 'E-mail, senha e unidade são obrigatórios'}, status=400)
 
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -145,6 +146,8 @@ def api_usuarios(request):
             user.save()
         except ValueError as err_modelo:
             return JsonResponse({'error': str(err_modelo)}, status=400)
+        except IntegrityError as e:
+            return JsonResponse({'error': 'Este CPF já está cadastrado.'}, status=409)
         except Exception as e:
             print(f'ERRO FATAL AO CRIAR O USUÁRIO: {repr(e)}')
             return JsonResponse({'error': 'Erro interno ao salvar os dados do usuário.'}, status=500)

@@ -16,7 +16,7 @@ function App() {
       <Routes>
         {/* Authentication Routes */}
         <Route path="/login/*" element={<LoginRoutes />} />
-        <Route path="/cadastro" element={<CadastroRoutes />} />
+        <Route path="/cadastro/*" element={<CadastroRoutes />} />
 
         {/* Open Routes */}
 

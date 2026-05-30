@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
 
@@ -15,8 +15,12 @@ export default function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, control } = useForm({
     resolver: yupResolver(userSchema),
+
+    defaultValues: {
+      cpf: '',
+    },
   });
 
   const handleFormSubmit = async (data) => {
@@ -67,17 +71,31 @@ export default function Login() {
             placeholder="Nome Completo"
             {...register('nome')}
           />
+
           <cad.InputEmail
             type="text"
             placeholder="E-mail"
             {...register('email')}
           />
-          <cad.InputCPF type="text" placeholder="CPF" {...register('cpf')} />
+
+          <Controller
+            name="cpf"
+            control={control}
+            render={({ field }) => (
+              <cad.InputCPF
+                format="###.###.###-##"
+                placeholder="CPF"
+                {...field}
+              />
+            )}
+          />
+
           <cad.InputSenha
             type="password"
             placeholder="Senha"
             {...register('senha')}
           />
+
           <cad.InputConfirmar
             type="password"
             placeholder="Confirmar Senha"
