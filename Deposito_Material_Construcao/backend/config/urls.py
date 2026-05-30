@@ -22,7 +22,13 @@ from apps.usuarios.views import (
     api_alternar_unidade  
 )
 from apps.auditoria.views import api_auditoria
-from apps.lojas.views import api_lojas
+from apps.estoque.views import (
+    api_estoque_list, 
+    api_movimentar_estoque, 
+    api_transferir_estoque, 
+    api_dashboard_estoque
+)
+
 
 urlpatterns = [
     # Sistema de autenticação (Cadastro, Login e Auditoria) 
@@ -36,7 +42,9 @@ urlpatterns = [
     path('api/usuarios/', api_usuarios, name='api_usuarios'),
     path('api/usuarios/<int:pk>/', api_usuario_detail, name='api_usuario_detail'),
     path('api/auditoria/', api_auditoria, name='api_auditoria'),
-
-    # Lojas
-    path('api/lojas/index', api_lojas, name='api_lojas')
+    
+    path('api/estoque/', api_estoque_list, name='api_estoque_list'),
+    path('api/estoque/movimentar/', api_movimentar_estoque, name='api_movimentar_estoque'),
+    path('api/estoque/transferir/', api_transferir_estoque, name='api_transferir_estoque'),
+    path('api/estoque/dashboard/', api_dashboard_estoque, name='api_dashboard_estoque'),
 ]
