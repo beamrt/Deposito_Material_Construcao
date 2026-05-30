@@ -28,6 +28,7 @@ from apps.estoque.views import (
     api_transferir_estoque, 
     api_dashboard_estoque
 )
+from apps.lojas.views import api_lojas
 
 
 urlpatterns = [
@@ -43,8 +44,12 @@ urlpatterns = [
     path('api/usuarios/<int:pk>/', api_usuario_detail, name='api_usuario_detail'),
     path('api/auditoria/', api_auditoria, name='api_auditoria'),
     
+    # Gestão de Estoque
     path('api/estoque/', api_estoque_list, name='api_estoque_list'),
     path('api/estoque/movimentar/', api_movimentar_estoque, name='api_movimentar_estoque'),
     path('api/estoque/transferir/', api_transferir_estoque, name='api_transferir_estoque'),
     path('api/estoque/dashboard/', api_dashboard_estoque, name='api_dashboard_estoque'),
+
+    # Lojas
+    path('api/lojas/index', api_lojas, name='api_lojas')
 ]
