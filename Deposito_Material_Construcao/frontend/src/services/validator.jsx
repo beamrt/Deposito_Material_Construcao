@@ -35,3 +35,14 @@ export const userSchema = yup.object().shape({
       return cpf.isValid(value);
     }),
 });
+
+export const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Digite um e-mail válido')
+    .required('O e-mail é obrigatório'),
+
+  senha: yup.string().required('A senha é obrigatória'),
+
+  id_loja: yup.number().required('A loja deve ser selecionada'),
+});

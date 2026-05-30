@@ -181,8 +181,14 @@ export const InputCPF = styled(PatternFormat)`
 export const ButtonSubmit = styled.button`
   padding: 10px;
   width: 170px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #002e58;
   background: #0f766e;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 118, 110, 1) 13%,
+    rgba(18, 143, 133, 1) 75%,
+    rgba(12, 184, 171, 1) 100%
+  );
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-style: normal;

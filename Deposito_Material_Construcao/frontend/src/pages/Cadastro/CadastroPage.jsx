@@ -71,6 +71,7 @@ export default function Login() {
             placeholder="Nome Completo"
             {...register('nome')}
           />
+
           <cad.InputEmail
             type="text"
             placeholder="E-mail"
@@ -94,6 +95,7 @@ export default function Login() {
             placeholder="Senha"
             {...register('senha')}
           />
+
           <cad.InputConfirmar
             type="password"
             placeholder="Confirmar Senha"
