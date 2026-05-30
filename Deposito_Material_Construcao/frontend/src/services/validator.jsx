@@ -44,5 +44,25 @@ export const loginSchema = yup.object().shape({
 
   senha: yup.string().required('A senha é obrigatória'),
 
-  id_loja: yup.number().required('A loja deve ser selecionada'),
+  id_loja: yup.string().required('A loja deve ser selecionada'),
+});
+
+export const forgetSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Digite um e-mail válido.')
+    .required('O e-mail deve ser preenchido.'),
+
+  senha: yup
+    .string()
+    .required('A nova senha deve ser preenchida.')
+    .min(8, 'A senha deve ter no mínimo 8 caracteres.')
+    .matches(/(?=.*[a-z])/, 'A senha deve ter pelo menos 1 letra minúscula.')
+    .matches(/(?=.*[A-Z])/, 'A senha deve ter pelo menos 1 letra maiúscula.')
+    .matches(/(?=.*[0-9])/, 'A senha deve ter pelo menos 1 número'),
+
+  confirmar_senha: yup
+    .string()
+    .required('A confirmação de senha é obrigatória.')
+    .oneOf([yup.ref('senha')], 'As senhas não conferem. Digite novamente.'),
 });

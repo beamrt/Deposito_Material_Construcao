@@ -50,7 +50,7 @@ export default function Login() {
       reset();
     } catch (e) {
       if (e.response) {
-        toast.error(e.response.data.error);
+        return toast.error(e.response.data.error);
       }
 
       return toast.error('Não foi possível conectar no servidor', e);
@@ -103,7 +103,7 @@ export default function Login() {
                 </option>
               ))
             ) : (
-              <option>Nenhuma loja cadastrada</option>
+              <option>{loj.message}</option>
             )}
           </log.Select>
 
