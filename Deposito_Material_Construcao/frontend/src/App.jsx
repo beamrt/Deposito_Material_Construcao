@@ -6,7 +6,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import GlobalStyles from './GlobalStyles/GlobalStyles';
 import LoginRoutes from './routes/LoginRoutes/LoginRoutes';
 import CadastroRoutes from './routes/CadastroRoutes/CadastroRoutes';
-import NotFound from './pages/404/404';
+import HomeRoutes from './routes/HomeRoutes/HomeRoutes';
 
 function App() {
   return (
@@ -22,8 +22,8 @@ function App() {
 
         {/* Nested Routes */}
 
-        <Route path="*" element={<NotFound />} />
         {/* Closed Routes */}
+        <Route path="/*" element={<HomeRoutes />} />
       </Routes>
 
       {/* ToastContainer */}
