@@ -6,4 +6,9 @@ export default createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
-`
+
+  body {
+    position: relative;
+    min-height: 100vh;
+  }
+`;
