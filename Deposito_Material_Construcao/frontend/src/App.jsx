@@ -7,6 +7,7 @@ import GlobalStyles from './GlobalStyles/GlobalStyles';
 import LoginRoutes from './routes/LoginRoutes/LoginRoutes';
 import CadastroRoutes from './routes/CadastroRoutes/CadastroRoutes';
 import HomeRoutes from './routes/HomeRoutes/HomeRoutes';
+import ProdutosRoutes from './routes/ProdutosRoutes/ProdutosRoutes';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
 
         {/* Closed Routes */}
         <Route path="/*" element={<HomeRoutes />} />
+        <Route path="/constrular/produtos/*" element={<ProdutosRoutes />} />
       </Routes>
 
       {/* ToastContainer */}

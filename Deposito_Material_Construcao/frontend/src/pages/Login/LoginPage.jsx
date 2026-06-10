@@ -103,7 +103,7 @@ export default function Login() {
                 </option>
               ))
             ) : (
-              <option>{loj.message}</option>
+              <option>Nenhuma loja cadastrada</option>
             )}
           </log.Select>
 

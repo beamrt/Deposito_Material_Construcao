@@ -3,11 +3,13 @@ import { FaFile } from 'react-icons/fa';
 import { FaChartLine } from 'react-icons/fa';
 import { FaDropbox } from 'react-icons/fa';
 import { TbSettingsCog } from 'react-icons/tb';
+import { useNavigate } from 'react-router';
 
 import * as home from './styled';
 import Footer from '../../components/Footer/Footer';
 
 export default function HomePage() {
+  const navigate = useNavigate();
   const [abaAtiva, setAbaAtiva] = useState('Home');
   const arrayBoxes = [
     {
@@ -70,7 +72,10 @@ export default function HomePage() {
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Produtos'}
-                onClick={() => setAbaAtiva('Produtos')}
+                onClick={() =>
+                  setAbaAtiva('Produtos') &
+                  navigate('/constrular/produtos/index')
+                }
               >
                 Produtos
               </home.List>
