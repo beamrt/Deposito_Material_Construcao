@@ -13,6 +13,24 @@ export const ContainerSide = styled.div`
   padding: 20px 0 20px 16px;
   transition: all 0.5s ease-in-out;
   overflow: hidden;
+  position: relative;
+  z-index: 999;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in-out;
+    z-index: -1;
+  }
 
   &:hover {
     width: 250px;
@@ -20,6 +38,10 @@ export const ContainerSide = styled.div`
     span {
       opacity: 1;
       transition-delay: 0.2s;
+    }
+
+    &::before {
+      opacity: 1;
     }
   }
 `;
