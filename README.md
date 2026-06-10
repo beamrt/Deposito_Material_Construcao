@@ -32,7 +32,7 @@
         <td>Desenvolvedor Front-End</td>
       </tr>
       <tr>
-        <td><a href= "hhttps://github.com/mateus-cc">Mateus César Costa</a></td>
+        <td><a href= "https://github.com/mateus-cc">Mateus César Costa</a></td>
         <td>Desenvolvedor Back-End</td>
       </tr>
       <tr>
@@ -51,4 +51,5 @@
   <img alt="MySQL" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" />
   <img alt="MongoDB" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" />
   <img alt="Git" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" />
+  <img alt="Python" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" />
 </div>
