@@ -583,8 +583,9 @@ export const DivButtonEdit = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 250px;
+  width: 450px;
   margin: 10px auto;
+  gap: 30px;
 `;
 
 export const ButtonEdit = styled.button`
@@ -618,4 +619,81 @@ export const ButtonEdit = styled.button`
     transform: scale(0.97);
     border-color: #df6e0199;
   }
+`;
+
+export const ButtonCancel = styled.button`
+  gap: 20px;
+  background: #7f1d1d;
+  background: linear-gradient(90deg, #8b0000 0%, #c62828 50%, #ef5350 100%);
+  border: none;
+  width: 210px;
+  border: 1px solid #d9d9d9;
+  padding: 12px;
+  font-size: 18px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  border-radius: 12px;
+  color: #fffff0;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 4px 6px 8px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.97);
+    border-color: #df6e0199;
+  }
+`;
+
+export const ContainerExclude = styled.div`
+  width: 650px;
+  min-height: 350px;
+  background: #fffff0;
+  border: 1px solid #04325b;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export const TitleExclude = styled.h3`
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  color: #252525;
+  font-size: 25px;
+
+  &.exclude {
+    color: #f42b2bb2;
+  }
+`;
+
+export const SubtitleExclude = styled.h4`
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #252525;
+  font-size: 17px;
+`;
+
+export const ContainerAlerts = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+export const ButtonAlerts = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 450px;
 `;

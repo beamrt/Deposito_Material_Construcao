@@ -5,6 +5,7 @@ import { FaEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { useState } from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { confirmAlert } from 'react-confirm-alert';
 
 import Header from '../../../components/Header/Header';
 import Sidebar from '../../../components/Sidebar/Sidebar';
@@ -13,6 +14,36 @@ import * as prod from './styled';
 export default function Index() {
   const navigate = useNavigate();
   const [boxAtiva, setBoxAtiva] = useState('');
+
+  const handleConfirm = () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <prod.ContainerExclude>
+            <prod.DivTitleEdit>
+              <prod.TitleEdit>Excluir Produto</prod.TitleEdit>
+            </prod.DivTitleEdit>
+            <prod.TitleExclude>
+              Tem certeza que deseja excluir este produto?
+            </prod.TitleExclude>
+            <prod.ContainerAlerts>
+              <prod.TitleExclude className="exclude">
+                Atenção!
+              </prod.TitleExclude>
+              <prod.SubtitleExclude>
+                Essa ação não pode ser desfeita.
+              </prod.SubtitleExclude>
+            </prod.ContainerAlerts>
+
+            <prod.ButtonAlerts>
+              <prod.ButtonAdd onClick={onClose}>Confirmar</prod.ButtonAdd>
+              <prod.ButtonCancel onClick={onClose}>Cancelar</prod.ButtonCancel>
+            </prod.ButtonAlerts>
+          </prod.ContainerExclude>
+        );
+      },
+    });
+  };
 
   return (
     <>
@@ -110,7 +141,10 @@ export default function Index() {
                     onClick={() => setBoxAtiva('active')}
                   />
                   <FaEye className="eye" />
-                  <MdDelete className="delete" />
+                  <MdDelete
+                    className="delete"
+                    onClick={() => handleConfirm()}
+                  />
                 </prod.IconWrapper>
               </td>
             </tr>
@@ -187,6 +221,9 @@ export default function Index() {
 
                 <prod.DivButtonEdit>
                   <prod.ButtonEdit>Atualizar</prod.ButtonEdit>
+                  <prod.ButtonCancel onClick={() => setBoxAtiva('')}>
+                    Cancelar
+                  </prod.ButtonCancel>
                 </prod.DivButtonEdit>
               </prod.Form>
             </prod.DivBox>
