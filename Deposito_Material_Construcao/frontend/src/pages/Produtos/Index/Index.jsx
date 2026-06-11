@@ -3,6 +3,8 @@ import { FaFilter } from 'react-icons/fa';
 import { FaEdit } from 'react-icons/fa';
 import { FaEye } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
+import { useState } from 'react';
+import { IoMdCloseCircle } from 'react-icons/io';
 
 import Header from '../../../components/Header/Header';
 import Sidebar from '../../../components/Sidebar/Sidebar';
@@ -10,6 +12,7 @@ import * as prod from './styled';
 
 export default function Index() {
   const navigate = useNavigate();
+  const [boxAtiva, setBoxAtiva] = useState('');
 
   return (
     <>
@@ -102,7 +105,10 @@ export default function Index() {
 
               <td>
                 <prod.IconWrapper>
-                  <FaEdit className="edit" />
+                  <FaEdit
+                    className="edit"
+                    onClick={() => setBoxAtiva('active')}
+                  />
                   <FaEye className="eye" />
                   <MdDelete className="delete" />
                 </prod.IconWrapper>
@@ -126,6 +132,67 @@ export default function Index() {
           <prod.ButtonExport>Exportar</prod.ButtonExport>
         </prod.ContainerExport>
       </prod.ContainerTable>
+
+      {boxAtiva === 'active' && (
+        <>
+          <prod.BackgroundOpacity onClick={() => setBoxAtiva('')}>
+            <prod.DivBox onClick={(e) => e.stopPropagation()}>
+              <prod.DivClose>
+                <IoMdCloseCircle
+                  className="close"
+                  onClick={() => setBoxAtiva('')}
+                />
+              </prod.DivClose>
+
+              <prod.DivTitleEdit>
+                <prod.TitleEdit>Editar Produto</prod.TitleEdit>
+              </prod.DivTitleEdit>
+
+              <prod.Form>
+                <prod.ContainerLabel>
+                  <prod.LabelEdit>Nome</prod.LabelEdit>
+                  <prod.InputEdit />
+                </prod.ContainerLabel>
+
+                <prod.ContainerWrapper>
+                  <prod.ContainerLabel>
+                    <prod.LabelEdit>Categoria</prod.LabelEdit>
+                    <prod.SelectEdit />
+                  </prod.ContainerLabel>
+                  <prod.ContainerLabel>
+                    <prod.LabelEdit>Preço de Compra</prod.LabelEdit>
+                    <prod.InputEdit />
+                  </prod.ContainerLabel>
+                  <prod.ContainerLabel>
+                    <prod.LabelEdit>Preço de Venda</prod.LabelEdit>
+                    <prod.InputEdit />
+                  </prod.ContainerLabel>
+                </prod.ContainerWrapper>
+
+                <prod.ContainerWrapper>
+                  <prod.ContainerLabel>
+                    <prod.Label>Tipo</prod.Label>
+                    <prod.SelectEdit />
+                  </prod.ContainerLabel>
+                  <prod.ContainerLabel>
+                    <prod.Label>Unidade</prod.Label>
+                    <prod.InputEdit />
+                  </prod.ContainerLabel>
+                </prod.ContainerWrapper>
+
+                <prod.ContainerLabel>
+                  <prod.Label>Descrição</prod.Label>
+                  <prod.Obs />
+                </prod.ContainerLabel>
+
+                <prod.DivButtonEdit>
+                  <prod.ButtonEdit>Atualizar</prod.ButtonEdit>
+                </prod.DivButtonEdit>
+              </prod.Form>
+            </prod.DivBox>
+          </prod.BackgroundOpacity>
+        </>
+      )}
     </>
   );
 }

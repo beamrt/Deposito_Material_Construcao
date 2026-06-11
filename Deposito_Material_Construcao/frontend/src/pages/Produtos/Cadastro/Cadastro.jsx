@@ -62,6 +62,7 @@ export default function Cadastro() {
           </cad.ContainerWrapper>
 
           <cad.ContainerLabel>
+            <cad.Label>Descrição</cad.Label>
             <cad.Obs />
           </cad.ContainerLabel>
 
