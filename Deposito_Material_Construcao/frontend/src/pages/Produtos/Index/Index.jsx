@@ -1,10 +1,16 @@
+import { useNavigate } from 'react-router';
 import { FaFilter } from 'react-icons/fa';
+import { FaEdit } from 'react-icons/fa';
+import { FaEye } from 'react-icons/fa';
+import { MdDelete } from 'react-icons/md';
 
 import Header from '../../../components/Header/Header';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import * as prod from './styled';
 
 export default function Index() {
+  const navigate = useNavigate();
+
   return (
     <>
       <Header />
@@ -45,7 +51,11 @@ export default function Index() {
       </prod.DivContainer>
 
       <prod.DivButtons>
-        <prod.ButtonAdd>Criar Produto</prod.ButtonAdd>
+        <prod.ButtonAdd
+          onClick={() => navigate('/constrular/produtos/cadastro')}
+        >
+          Cadastrar Produto
+        </prod.ButtonAdd>
         <prod.DivButtonOrder>
           <prod.Subtitle>Ordenar por:</prod.Subtitle>
           <prod.Select>
@@ -63,6 +73,7 @@ export default function Index() {
               <th>Tipo</th>
               <th>Preço</th>
               <th>Descrição</th>
+              <th>Ações</th>
             </tr>
           </prod.TableHead>
 
@@ -88,6 +99,14 @@ export default function Index() {
                 Cimento portland composto CP-II, uso geral em obras e
                 construções
               </prod.DescriptionCell>
+
+              <td>
+                <prod.IconWrapper>
+                  <FaEdit className="edit" />
+                  <FaEye className="eye" />
+                  <MdDelete className="delete" />
+                </prod.IconWrapper>
+              </td>
             </tr>
           </prod.TableBody>
         </prod.StyledTable>

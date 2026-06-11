@@ -12,7 +12,7 @@ export const ContainerTitle = styled.div`
 export const Title = styled.h1`
   font-family: 'Outfit', sans-serif;
   font-optical-sizing: auto;
-  font-weight: 500;
+  font-weight: 700;
   font-style: normal;
   font-size: 35px;
   text-transform: uppercase;
@@ -63,6 +63,10 @@ export const Select = styled.select`
   font-family: 'Poppins', sans-serif;
   font-weight: 300;
   font-style: italic;
+
+  &:focus {
+    border-color: #df6e01;
+  }
 `;
 
 export const DivLabel = styled.div`
@@ -91,6 +95,10 @@ export const Input = styled.input`
   font-weight: 300;
   font-style: italic;
   outline: none;
+
+  &:focus {
+    border-color: #df6e01;
+  }
 `;
 
 export const DivButton = styled.div`
@@ -226,6 +234,7 @@ export const TableHead = styled.thead`
     color: #4a4a4a;
     text-align: left;
     background: #f8f8f8;
+    text-align: center;
   }
 `;
 
@@ -244,6 +253,7 @@ export const TableBody = styled.tbody`
     font-size: 14px;
     color: #4a4a4a;
     vertical-align: middle;
+    text-align: center;
   }
 `;
 
@@ -385,5 +395,29 @@ export const ButtonExport = styled.button`
   &:active {
     transform: scale(0.97);
     border-color: #df6e0199;
+  }
+`;
+
+export const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  .edit,
+  .eye,
+  .delete {
+    color: #df6c01;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1) rotate(12deg);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
 `;

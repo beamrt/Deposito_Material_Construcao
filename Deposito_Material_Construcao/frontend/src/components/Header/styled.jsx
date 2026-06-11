@@ -30,7 +30,6 @@ export const DivIcon = styled.div`
   width: 10%;
   right: 40px;
   top: 115px;
-  height: 75px;
   position: absolute;
 `;
 
@@ -46,5 +45,10 @@ export const Icon = styled.div`
     font-size: 45px;
     color: #004787;
     cursor: pointer;
+    transition: all 0.2s ease-in;
+
+    &:hover {
+      color: #df6c01;
+    }
   }
 `;

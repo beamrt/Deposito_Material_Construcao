@@ -10,7 +10,7 @@ export const ContainerSide = styled.div`
   justify-content: center;
   flex-direction: column;
   gap: 50px;
-  padding: 20px 0 20px 16px;
+  padding: 0 0 20px 16px;
   transition: all 0.5s ease-in-out;
   overflow: hidden;
   position: relative;
