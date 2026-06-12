@@ -486,6 +486,10 @@ export const DivTitleEdit = styled.div`
   justify-content: center;
   width: 450px;
   margin: 0 auto;
+
+  &.category {
+    margin-top: 60px;
+  }
 `;
 
 export const TitleEdit = styled.h3`
@@ -792,7 +796,6 @@ export const ButtonBack = styled.div`
 `;
 
 export const DivCategory = styled.div`
-  background: #004787;
   position: fixed;
   right: 0;
   width: 500px;
@@ -809,18 +812,10 @@ export const CategoryWrapper = styled.div`
   border-radius: 12px;
   background: #fffff0;
   display: grid;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   justify-content: center;
-  grid-template-rows: repeat(2, 1fr);
-`;
-
-export const CategoryGridWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
 `;
 
 export const FormCategory = styled.div`
@@ -834,13 +829,22 @@ export const FormCategory = styled.div`
   gap: 20px;
 `;
 
+export const CategoryGridWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+`;
+
 export const ContainerTableCategory = styled.div`
   border-radius: 14px;
-  width: 100%;
+  flex: 1;
+  width: 96%;
   gap: 20px;
   margin-top: 5px;
   background: #fffff0;
   border: 1px solid #004787;
-  height: 400px;
   overflow: hidden;
 `;
