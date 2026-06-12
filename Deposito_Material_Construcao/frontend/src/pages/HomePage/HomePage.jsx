@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 
 import * as home from './styled';
 import Footer from '../../components/Footer/Footer';
+import Header from '../../components/Header/Header';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -38,10 +39,7 @@ export default function HomePage() {
   return (
     <>
       <home.Background>
-        <home.Footer>
-          <home.Logo>Construshop</home.Logo>
-          <home.Subtitle>Matriz - Constrular</home.Subtitle>
-        </home.Footer>
+        <Header />
 
         <home.DivNav>
           <home.Navbar>
