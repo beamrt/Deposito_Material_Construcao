@@ -468,6 +468,9 @@ export const BackgroundOpacity = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 999;
 `;
 
 export const DivTitleEdit = styled.div`
@@ -696,4 +699,87 @@ export const ButtonAlerts = styled.div`
   justify-content: center;
   gap: 20px;
   width: 450px;
+`;
+
+export const InfoModal = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  box-shadow: 8px 12px 12px rgba(0, 0, 0, 0.1);
+  width: 70%;
+  height: 70%;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+export const BoxInfo = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 10px;
+  gap: 5px;
+`;
+
+export const Informations = styled.h4`
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  color: #252525;
+  font-size: 17px;
+
+  span {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #252525;
+  }
+`;
+
+export const DivView = styled.div`
+  width: 700px;
+  min-height: 400px;
+  border: 1px solid #004787;
+  border-radius: 12px;
+  margin: 300px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fffff0;
+  box-shadow: 8px 12px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  flex-direction: column;
+  padding: 20px 0;
+`;
+
+export const ButtonBack = styled.div`
+  border: 1px solid #df6c01;
+  padding: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 19px;
+  color: #df6c01;
+  border-radius: 12px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;

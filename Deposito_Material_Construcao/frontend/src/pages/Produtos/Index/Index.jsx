@@ -138,9 +138,12 @@ export default function Index() {
                 <prod.IconWrapper>
                   <FaEdit
                     className="edit"
-                    onClick={() => setBoxAtiva('active')}
+                    onClick={() => setBoxAtiva('ModalEdit')}
                   />
-                  <FaEye className="eye" />
+                  <FaEye
+                    className="eye"
+                    onClick={() => setBoxAtiva('ModalView')}
+                  />
                   <MdDelete
                     className="delete"
                     onClick={() => handleConfirm()}
@@ -167,7 +170,7 @@ export default function Index() {
         </prod.ContainerExport>
       </prod.ContainerTable>
 
-      {boxAtiva === 'active' && (
+      {boxAtiva === 'ModalEdit' && (
         <>
           <prod.BackgroundOpacity onClick={() => setBoxAtiva('')}>
             <prod.DivBox onClick={(e) => e.stopPropagation()}>
@@ -229,6 +232,59 @@ export default function Index() {
             </prod.DivBox>
           </prod.BackgroundOpacity>
         </>
+      )}
+
+      {boxAtiva === 'ModalView' && (
+        <prod.BackgroundOpacity onClick={() => setBoxAtiva('')}>
+          <prod.DivView onClick={(e) => e.stopPropagation()}>
+            <prod.DivClose>
+              <IoMdCloseCircle
+                className="close"
+                onClick={() => setBoxAtiva('')}
+              />
+            </prod.DivClose>
+
+            <prod.DivTitleEdit>
+              <prod.TitleEdit>Informações</prod.TitleEdit>
+            </prod.DivTitleEdit>
+
+            <prod.InfoModal>
+              <prod.BoxInfo>
+                <prod.Informations>
+                  Nome: <span>Cimento CP-II</span>
+                </prod.Informations>
+                <prod.Informations>
+                  Categoria: <span>Construção</span>
+                </prod.Informations>
+                <prod.Informations>
+                  Tipo: <span>Material</span>
+                </prod.Informations>
+                <prod.Informations>
+                  Unidades: <span>22</span>
+                </prod.Informations>
+                <prod.Informations>
+                  Preço de Venda: <span>R$ 42,90</span>{' '}
+                </prod.Informations>
+                <prod.Informations>
+                  Preço de Compra: <span>R$ 32,90</span>
+                </prod.Informations>
+                <prod.Informations>
+                  Descrição:{' '}
+                  <span>
+                    Cimento portland composto CP-II, uso geral em obras e
+                    construções
+                  </span>{' '}
+                </prod.Informations>
+              </prod.BoxInfo>
+            </prod.InfoModal>
+
+            <prod.DivButtonEdit>
+              <prod.ButtonBack onClick={() => setBoxAtiva('')}>
+                Voltar
+              </prod.ButtonBack>
+            </prod.DivButtonEdit>
+          </prod.DivView>
+        </prod.BackgroundOpacity>
       )}
     </>
   );
