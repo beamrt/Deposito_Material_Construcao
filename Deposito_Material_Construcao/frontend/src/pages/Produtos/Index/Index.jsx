@@ -85,11 +85,16 @@ export default function Index() {
       </prod.DivContainer>
 
       <prod.DivButtons>
-        <prod.ButtonAdd
-          onClick={() => navigate('/constrular/produtos/cadastro')}
-        >
-          Cadastrar Produto
-        </prod.ButtonAdd>
+        <prod.ButtonsWrapper>
+          <prod.ButtonAdd
+            onClick={() => navigate('/constrular/produtos/cadastro')}
+          >
+            Cadastrar Produto
+          </prod.ButtonAdd>
+          <prod.ButtonAdd onClick={() => setBoxAtiva('ModalCategory')}>
+            Cadastrar Categoria
+          </prod.ButtonAdd>
+        </prod.ButtonsWrapper>
         <prod.DivButtonOrder>
           <prod.Subtitle>Ordenar por:</prod.Subtitle>
           <prod.Select>
@@ -284,6 +289,82 @@ export default function Index() {
               </prod.ButtonBack>
             </prod.DivButtonEdit>
           </prod.DivView>
+        </prod.BackgroundOpacity>
+      )}
+
+      {boxAtiva === 'ModalCategory' && (
+        <prod.BackgroundOpacity onClick={() => setBoxAtiva('')}>
+          <prod.DivCategory onClick={(e) => e.stopPropagation()}>
+            <prod.CategoryWrapper>
+              <prod.DivClose>
+                <IoMdCloseCircle
+                  className="close"
+                  onClick={() => setBoxAtiva('')}
+                />
+              </prod.DivClose>
+
+              <prod.CategoryGridWrapper>
+                <prod.DivTitleEdit className="category">
+                  <prod.TitleEdit>Cadastrar Categoria</prod.TitleEdit>
+                </prod.DivTitleEdit>
+
+                <prod.FormCategory>
+                  <prod.ContainerLabel>
+                    <prod.Label>Nome</prod.Label>
+                    <prod.InputEdit />
+                  </prod.ContainerLabel>
+
+                  <prod.DivButtonEdit>
+                    <prod.ButtonAdd>Cadastrar</prod.ButtonAdd>
+                  </prod.DivButtonEdit>
+                </prod.FormCategory>
+              </prod.CategoryGridWrapper>
+
+              <prod.CategoryGridWrapper>
+                <prod.DivTitleEdit>
+                  <prod.TitleEdit>Categorias Cadastradas</prod.TitleEdit>
+                </prod.DivTitleEdit>
+
+                <prod.ContainerTableCategory>
+                  <prod.StyledTable>
+                    <prod.TableHead>
+                      <tr>
+                        <th>Categoria</th>
+                        <th>Ações</th>
+                      </tr>
+                    </prod.TableHead>
+
+                    <prod.TableBody>
+                      <tr>
+                        <td>
+                          <prod.CategoryBadge
+                            style={{
+                              background: '#CFE3FF',
+                            }}
+                          >
+                            Construção
+                          </prod.CategoryBadge>
+                        </td>
+
+                        <td>
+                          <prod.IconWrapper>
+                            <FaEdit
+                              className="edit"
+                              onClick={() => setBoxAtiva('ModalEdit')}
+                            />
+                            <MdDelete
+                              className="delete"
+                              onClick={() => handleConfirm()}
+                            />
+                          </prod.IconWrapper>
+                        </td>
+                      </tr>
+                    </prod.TableBody>
+                  </prod.StyledTable>
+                </prod.ContainerTableCategory>
+              </prod.CategoryGridWrapper>
+            </prod.CategoryWrapper>
+          </prod.DivCategory>
         </prod.BackgroundOpacity>
       )}
     </>

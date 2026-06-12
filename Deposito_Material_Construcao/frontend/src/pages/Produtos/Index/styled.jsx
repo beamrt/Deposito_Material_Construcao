@@ -158,6 +158,13 @@ export const DivButtons = styled.div`
   margin-top: 20px;
 `;
 
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+`;
+
 export const ButtonAdd = styled.button`
   gap: 20px;
   background: #04325b;
@@ -168,7 +175,7 @@ export const ButtonAdd = styled.button`
     rgba(5, 100, 185, 1) 100%
   );
   border: none;
-  width: 210px;
+  min-width: 210px;
   border: 1px solid #d9d9d9;
   padding: 12px;
   font-size: 18px;
@@ -782,4 +789,58 @@ export const ButtonBack = styled.div`
   &:active {
     transform: scale(0.95);
   }
+`;
+
+export const DivCategory = styled.div`
+  background: #004787;
+  position: fixed;
+  right: 0;
+  width: 500px;
+  height: 100vh;
+  padding: 10px;
+`;
+
+export const CategoryWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  border: 2px solid #df6c01;
+  border-radius: 12px;
+  background: #fffff0;
+  display: grid;
+  align-items: flex-start;
+  justify-content: center;
+  grid-template-rows: repeat(2, 1fr);
+`;
+
+export const CategoryGridWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
+export const FormCategory = styled.div`
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export const ContainerTableCategory = styled.div`
+  border-radius: 14px;
+  width: 100%;
+  gap: 20px;
+  margin-top: 5px;
+  background: #fffff0;
+  border: 1px solid #004787;
+  height: 400px;
+  overflow: hidden;
 `;
