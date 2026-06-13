@@ -31,7 +31,12 @@ export default function HomePage() {
     },
     {
       id: 4,
-      icon: <TbSettingsCog className="Settings" />,
+      icon: (
+        <TbSettingsCog
+          className="Settings"
+          onClick={() => navigate('/constrular/usuarios/index')}
+        />
+      ),
       title: 'Configurações',
     },
   ];
