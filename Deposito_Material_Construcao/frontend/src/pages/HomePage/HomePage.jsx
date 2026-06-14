@@ -26,7 +26,12 @@ export default function HomePage() {
     },
     {
       id: 3,
-      icon: <FaDropbox className="Box" />,
+      icon: (
+        <FaDropbox
+          className="Box"
+          onClick={() => navigate('/constrular/estoque')}
+        />
+      ),
       title: 'Estoque',
     },
     {
@@ -63,7 +68,10 @@ export default function HomePage() {
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Estoque'}
-                onClick={() => setAbaAtiva('Estoque')}
+                onClick={() => {
+                  setAbaAtiva('Estoque');
+                  navigate('/constrular/estoque');
+                }}
               >
                 Estoque
               </home.List>

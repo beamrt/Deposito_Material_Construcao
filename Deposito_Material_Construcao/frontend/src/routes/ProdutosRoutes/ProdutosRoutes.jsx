@@ -6,12 +6,9 @@ import Cadastro from '../../pages/Produtos/Cadastro/Cadastro';
 export default function ProdutosRoutes() {
   return (
     <Routes>
-      <Route
-        path="/constrular/produtos"
-        element={<Navigate to="/produtos/index" replace />}
-      />
-      <Route path="/index" element={<Index />} />
-      <Route path="/cadastro" element={<Cadastro />} />
+      <Route index element={<Navigate to="index" replace />} />
+      <Route path="index" element={<Index />} />
+      <Route path="cadastro" element={<Cadastro />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
