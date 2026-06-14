@@ -225,11 +225,11 @@ export const ContainerCharts = styled.div`
 
 export const Charts = styled.div`
   width: 100%;
-  height: 450px;
   background: #fffff0;
-  border: 2px solid #df6c01;
+  border: 2px solid #004787;
   border-radius: 12px;
   box-shadow: 8px 12px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
 `;
 
 export const LineCharts = styled.div`
