@@ -1,12 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router';
-import IndexUsers from '../../pages/Usuarios/Index/IndexUser';
+import IndexEstoque from '../../pages/Estoque/Index/IndexEstoque';
 import NotFound from '../../pages/404/404';
 
-export default function UsersRoutes() {
+export default function EstoqueRoutes() {
   return (
     <Routes>
       <Route index element={<Navigate to="index" replace />} />
-      <Route path="index" element={<IndexUsers />} />
+      <Route path="index" element={<IndexEstoque />} />
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
