@@ -21,7 +21,12 @@ export default function HomePage() {
 
     {
       id: 2,
-      icon: <FaChartLine className="Dash" />,
+      icon: (
+        <FaChartLine
+          className="Dash"
+          onClick={() => navigate('/constrular/dashboard')}
+        />
+      ),
       title: 'Dashboard',
     },
     {
@@ -62,7 +67,10 @@ export default function HomePage() {
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Dashboard'}
-                onClick={() => setAbaAtiva('Dashboard')}
+                onClick={() => {
+                  setAbaAtiva('Dashboard');
+                  navigate('/constrular/dashboard');
+                }}
               >
                 Dashboard
               </home.List>

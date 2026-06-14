@@ -30,7 +30,10 @@ export default function Sidebar() {
         <FaHome className="home" />
         <side.MenuText>Home</side.MenuText>
       </side.MenuItem>
-      <side.MenuItem $isActive={abaAtiva === 'chart'}>
+      <side.MenuItem
+        $isActive={abaAtiva.includes('/constrular/dashboard')}
+        onClick={() => navigate('/constrular/dashboard')}
+      >
         <FaChartLine className="chart" />
         <side.MenuText>Dashboard</side.MenuText>
       </side.MenuItem>
