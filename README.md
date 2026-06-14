@@ -53,10 +53,3 @@
   <img alt="Git" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" />
   <img alt="Python" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" />
 </div>
-
-<div align="center" style="margin-top: 10px;">
-<h3>Protótipo</h3>
-
-  <p>O protótipo da aplicação foi desenvolvido no Figma e pode ser acessado pelo link abaixo:</p>
-  🔗 <a href= "https://www.figma.com/design/VOCBSYt2Mr9DG8f7N7uGnI/Constrular?node-id=0-1&t=4pu5A6wnHHWcO5i8-1">Clique Aqui</a></td>
-</div>

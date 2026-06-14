@@ -38,9 +38,12 @@ export default function Sidebar() {
         <FaDropbox className="drop" />
         <side.MenuText>Estoque</side.MenuText>
       </side.MenuItem>
-      <side.MenuItem $isActive={abaAtiva === 'sett'}>
+      <side.MenuItem
+        $isActive={abaAtiva.includes('/constrular/usuarios')}
+        onClick={() => navigate('/constrular/usuarios/index')}
+      >
         <TbSettingsCog className="sett" />
-        <side.MenuText>Configurações</side.MenuText>
+        <side.MenuText>Usuários</side.MenuText>
       </side.MenuItem>
       <side.MenuItem $isActive={abaAtiva === 'file'}>
         <FaFile className="file" />
