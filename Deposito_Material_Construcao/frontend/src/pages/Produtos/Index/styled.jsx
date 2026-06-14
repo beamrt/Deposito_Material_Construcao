@@ -801,7 +801,6 @@ export const DivCategory = styled.div`
   width: 500px;
   height: 100vh;
   padding: 10px;
-  z-index: 999;
 `;
 
 export const CategoryWrapper = styled.div`

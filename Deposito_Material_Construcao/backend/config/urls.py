@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.urls import path, include
 from django.urls import path
 from apps.usuarios.views import (
     api_login, api_logout, api_usuarios, 
@@ -51,5 +52,8 @@ urlpatterns = [
     path('api/estoque/dashboard/', api_dashboard_estoque, name='api_dashboard_estoque'),
 
     # Lojas
-    path('api/lojas/index', api_lojas, name='api_lojas')
+    path('api/lojas/index', api_lojas, name='api_lojas'),
+
+    # Cadastro de Produtos
+    path('api/produtos/', include('apps.produtos.urls'))
 ]
