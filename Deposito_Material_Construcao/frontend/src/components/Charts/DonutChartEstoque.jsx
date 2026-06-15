@@ -21,16 +21,15 @@ export const ChartTitle = styled.h3`
   text-align: center;
 `;
 
-export default function GraficoEstoque() {
-  const series = [450, 320, 210, 120];
+export default function GraficoSituacaoEstoque() {
+  const series = [150, 45, 12];
 
   const options = {
     chart: {
-      id: 'categorias-estoque',
+      id: 'situacao-estoque',
     },
-
-    labels: ['Construção', 'Acabamento', 'Pintura', 'Ferramentas'],
-    colors: ['#002e58', '#004787', '#df6c01', '#e67e00'],
+    labels: ['Estoque Alto', 'Estoque Baixo', 'Esgotado'],
+    colors: ['#004787', '#df6c01', '#d32f2f'],
 
     dataLabels: {
       enabled: true,
@@ -43,6 +42,7 @@ export default function GraficoEstoque() {
         enabled: false,
       },
     },
+
     legend: {
       show: true,
       position: 'bottom',
@@ -50,6 +50,15 @@ export default function GraficoEstoque() {
       fontSize: '14px',
       labels: {
         colors: '#252525',
+      },
+      markers: {
+        width: 12,
+        height: 12,
+        radius: 12,
+      },
+      itemMargin: {
+        horizontal: 10,
+        vertical: 5,
       },
     },
     tooltip: {
@@ -60,7 +69,40 @@ export default function GraficoEstoque() {
       },
       y: {
         formatter: function (val) {
-          return val + ' produtos em estoque';
+          return val + ' itens nesta situação';
+        },
+      },
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '70%',
+          labels: {
+            show: true,
+            name: {
+              show: true,
+              fontFamily: 'Poppins, sans-serif',
+              color: '#4a4a4a',
+            },
+            value: {
+              show: true,
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 600,
+              fontSize: '24px',
+              color: '#00e258',
+            },
+            total: {
+              show: true,
+              showAlways: true,
+              label: 'Total Cadastrado',
+              color: '#4a4a4a',
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 400,
+              formatter: function (w) {
+                return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+              },
+            },
+          },
         },
       },
     },
@@ -68,9 +110,9 @@ export default function GraficoEstoque() {
 
   return (
     <ChartCard>
-      <ChartTitle>Distribuição do Estoque</ChartTitle>
+      <ChartTitle>Status Geral do Estoque</ChartTitle>
 
-      <Chart options={options} series={series} type="pie" height={380} />
+      <Chart options={options} series={series} type="donut" height={380} />
     </ChartCard>
   );
 }

@@ -102,7 +102,7 @@ export default function GraficoProdutos() {
     <ChartCard>
       <ChartTitle>Produtos Mais Vendidos</ChartTitle>
 
-      <Chart options={options} series={series} type="bar" height={350} />
+      <Chart options={options} series={series} type="bar" height={400} />
     </ChartCard>
   );
 }
