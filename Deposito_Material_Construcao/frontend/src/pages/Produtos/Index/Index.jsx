@@ -6,6 +6,7 @@ import { MdDelete } from 'react-icons/md';
 import { useState } from 'react';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { confirmAlert } from 'react-confirm-alert';
+import { useEffect } from 'react';
 
 import Header from '../../../components/Header/Header';
 import Sidebar from '../../../components/Sidebar/Sidebar';
@@ -15,7 +16,64 @@ export default function Index() {
   const navigate = useNavigate();
   const [boxAtiva, setBoxAtiva] = useState('');
 
-  const handleConfirm = () => {
+  const [listaProdutos, setListaProdutos] = useState([]);
+  const [produtoEditando, setProdutoEditando] = useState(null);
+
+  const buscarProdutos = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/produtos/listar');
+      if (response.ok) {
+        const dados = await response.json();
+        setListaProdutos(dados); 
+      } else {
+        console.error("Erro ao buscar produtos. Status:", response.status);
+      }
+    } catch (error) {
+      console.error("Erro de conexão com o servidor:", error);
+    }
+  };
+
+  const excluirProduto = async (id) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/produtos/deletar/${id}/`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      buscarProdutos(); 
+    } else {
+      alert("Erro ao excluir produto.");
+    }
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor:", error);
+  }
+};
+
+  const salvarEdicao = async () => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/produtos/editar/${produtoEditando.id_produto}/`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(produtoEditando)
+    });
+
+    if (response.ok) {
+      alert("Produto atualizado com sucesso!");
+      setBoxAtiva('');
+      buscarProdutos();
+    } else {
+      alert("Erro ao editar produto.");
+    }
+  } catch (error) {
+    console.error("Erro na edição:", error);
+  }
+};
+
+  useEffect(() => {
+    buscarProdutos();
+  }, []);
+
+  const handleConfirm = (id) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
@@ -36,7 +94,10 @@ export default function Index() {
             </prod.ContainerAlerts>
 
             <prod.ButtonAlerts>
-              <prod.ButtonAdd onClick={onClose}>Confirmar</prod.ButtonAdd>
+              <prod.ButtonAdd onClick={() => {
+                excluirProduto(id);
+                onClose();
+              }}>Confirmar</prod.ButtonAdd>
               <prod.ButtonCancel onClick={onClose}>Cancelar</prod.ButtonCancel>
             </prod.ButtonAlerts>
           </prod.ContainerExclude>
@@ -117,46 +178,62 @@ export default function Index() {
           </prod.TableHead>
 
           <prod.TableBody>
-            <tr>
-              <td>Cimento CP-II</td>
+            {listaProdutos.length > 0 ? (
+              listaProdutos.map((produto) => (
+                <tr key={produto.id_produto}>
+                  <td>{produto.nome}</td>
 
-              <td>
-                <prod.CategoryBadge
-                  style={{
-                    background: '#CFE3FF',
-                  }}
-                >
-                  Construção
-                </prod.CategoryBadge>
-              </td>
+                  <td>
+                    <prod.CategoryBadge
+                      style={{
+                        background: '#CFE3FF',
+                      }}
+                    >
+                      {produto.id_categoria || '1'} 
+                    </prod.CategoryBadge>
+                  </td>
 
-              <td>Material</td>
+                  <td>{produto.marca}</td>
 
-              <td>R$ 42,90</td>
+                  <td>R$ {produto.preco_venda}</td>
 
-              <prod.DescriptionCell>
-                Cimento portland composto CP-II, uso geral em obras e
-                construções
-              </prod.DescriptionCell>
+                  <prod.DescriptionCell>
+                    {produto.descricao}
+                  </prod.DescriptionCell>
 
-              <td>
-                <prod.IconWrapper>
-                  <FaEdit
-                    className="edit"
-                    onClick={() => setBoxAtiva('ModalEdit')}
-                  />
-                  <FaEye
-                    className="eye"
-                    onClick={() => setBoxAtiva('ModalView')}
-                  />
-                  <MdDelete
-                    className="delete"
-                    onClick={() => handleConfirm()}
-                  />
-                </prod.IconWrapper>
-              </td>
-            </tr>
+                  <td>
+                    <prod.IconWrapper>
+                      <FaEdit
+                        className="edit"
+                        onClick={() => {
+                          setProdutoEditando(produto);
+                          setBoxAtiva('ModalEdit')}
+                        } 
+                      />
+                      <FaEye
+                        className="eye"
+                        onClick={() => setBoxAtiva('ModalView')}
+                      />
+                      <MdDelete
+                        className="delete"
+                        onClick={() => {                          
+                          handleConfirm(produto.id_produto)
+                        }
+                        }
+                      />
+                    </prod.IconWrapper>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+                  Nenhum produto cadastrado no banco de dados ainda.
+                </td>
+              </tr>
+            )}
           </prod.TableBody>
+
         </prod.StyledTable>
 
         <prod.TableFooter>
@@ -190,45 +267,66 @@ export default function Index() {
                 <prod.TitleEdit>Editar Produto</prod.TitleEdit>
               </prod.DivTitleEdit>
 
-              <prod.Form>
+<prod.Form>
                 <prod.ContainerLabel>
                   <prod.LabelEdit>Nome</prod.LabelEdit>
-                  <prod.InputEdit />
+                  <prod.InputEdit
+                    value={produtoEditando ? produtoEditando.nome : ''} 
+                    onChange={(e) => setProdutoEditando({...produtoEditando, nome: e.target.value})}
+                   />
                 </prod.ContainerLabel>
 
                 <prod.ContainerWrapper>
                   <prod.ContainerLabel>
                     <prod.LabelEdit>Categoria</prod.LabelEdit>
-                    <prod.SelectEdit />
+                    <prod.InputEdit 
+                      value={produtoEditando ? produtoEditando.id_categoria : ''} 
+                      onChange={(e) => setProdutoEditando({...produtoEditando, id_categoria: e.target.value})}
+                    />
                   </prod.ContainerLabel>
                   <prod.ContainerLabel>
                     <prod.LabelEdit>Preço de Compra</prod.LabelEdit>
-                    <prod.InputEdit />
+                    <prod.InputEdit 
+                      value={produtoEditando ? produtoEditando.preco_compra : ''} 
+                      onChange={(e) => setProdutoEditando({...produtoEditando, preco_compra: e.target.value})}
+                    />
                   </prod.ContainerLabel>
                   <prod.ContainerLabel>
                     <prod.LabelEdit>Preço de Venda</prod.LabelEdit>
-                    <prod.InputEdit />
+                    <prod.InputEdit 
+                      value={produtoEditando ? produtoEditando.preco_venda : ''} 
+                      onChange={(e) => setProdutoEditando({...produtoEditando, preco_venda: e.target.value})}
+                    />
                   </prod.ContainerLabel>
                 </prod.ContainerWrapper>
 
                 <prod.ContainerWrapper>
                   <prod.ContainerLabel>
-                    <prod.Label>Tipo</prod.Label>
-                    <prod.SelectEdit />
+                    <prod.Label>Marca</prod.Label>
+                    <prod.InputEdit 
+                      value={produtoEditando ? produtoEditando.marca : ''} 
+                      onChange={(e) => setProdutoEditando({...produtoEditando, marca: e.target.value})}
+                    />
                   </prod.ContainerLabel>
                   <prod.ContainerLabel>
                     <prod.Label>Unidade</prod.Label>
-                    <prod.InputEdit />
+                    <prod.InputEdit 
+                      value={produtoEditando ? produtoEditando.unidade_medida : ''} 
+                      onChange={(e) => setProdutoEditando({...produtoEditando, unidade_medida: e.target.value})}
+                    />
                   </prod.ContainerLabel>
                 </prod.ContainerWrapper>
 
                 <prod.ContainerLabel>
                   <prod.Label>Descrição</prod.Label>
-                  <prod.Obs />
+                  <prod.Obs 
+                    value={produtoEditando ? produtoEditando.descricao : ''} 
+                    onChange={(e) => setProdutoEditando({...produtoEditando, descricao: e.target.value})}
+                  />
                 </prod.ContainerLabel>
 
                 <prod.DivButtonEdit>
-                  <prod.ButtonEdit>Atualizar</prod.ButtonEdit>
+                  <prod.ButtonEdit onClick={salvarEdicao}>Atualizar</prod.ButtonEdit>
                   <prod.ButtonCancel onClick={() => setBoxAtiva('')}>
                     Cancelar
                   </prod.ButtonCancel>
@@ -338,26 +436,12 @@ export default function Index() {
                       <tr>
                         <td>
                           <prod.CategoryBadge
-                            style={{
-                              background: '#CFE3FF',
-                            }}
+                            style={{ background: '#CFE3FF' }}
                           >
                             Construção
                           </prod.CategoryBadge>
                         </td>
 
-                        <td>
-                          <prod.IconWrapper>
-                            <FaEdit
-                              className="edit"
-                              onClick={() => setBoxAtiva('ModalEdit')}
-                            />
-                            <MdDelete
-                              className="delete"
-                              onClick={() => handleConfirm()}
-                            />
-                          </prod.IconWrapper>
-                        </td>
                       </tr>
                     </prod.TableBody>
                   </prod.StyledTable>

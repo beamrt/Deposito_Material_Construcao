@@ -8,9 +8,6 @@ import LoginRoutes from './routes/LoginRoutes/LoginRoutes';
 import CadastroRoutes from './routes/CadastroRoutes/CadastroRoutes';
 import HomeRoutes from './routes/HomeRoutes/HomeRoutes';
 import ProdutosRoutes from './routes/ProdutosRoutes/ProdutosRoutes';
-import UsersRoutes from './routes/UsersRoutes/UsersRoutes';
-import EstoqueRoutes from './routes/EstoqueRoutes/EstoqueRoutes';
-import DashboardRoutes from './routes/DashboardRoutes/DashboardRoutes';
 
 function App() {
   return (
@@ -29,9 +26,6 @@ function App() {
         {/* Closed Routes */}
         <Route path="/*" element={<HomeRoutes />} />
         <Route path="/constrular/produtos/*" element={<ProdutosRoutes />} />
-        <Route path="/constrular/usuarios/*" element={<UsersRoutes />} />
-        <Route path="/constrular/estoque/*" element={<EstoqueRoutes />} />
-        <Route path="/constrular/dashboard" element={<DashboardRoutes />} />
       </Routes>
 
       {/* ToastContainer */}
