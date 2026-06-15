@@ -10,6 +10,7 @@ import GraficoProdutos from '../../components/Charts/BarChartProduct';
 import GraficoEstoque from '../../components/Charts/PizzaChartEstoque';
 import GraficoSituacaoEstoque from '../../components/Charts/DonutChartEstoque';
 import GraficoTicketMedio from '../../components/Charts/BarChartTicket';
+import GraficoMovimentacao from '../../components/Charts/AgroupedBars';
 
 export default function Dashboard() {
   const dashKPIS = [
@@ -22,7 +23,7 @@ export default function Dashboard() {
     {
       id: 2,
       title: 'Produtos Cadastrados',
-      content: '189',
+      content: '207',
     },
     {
       id: 3,
@@ -112,7 +113,9 @@ export default function Dashboard() {
         <dash.Charts>
           <GraficoTicketMedio />
         </dash.Charts>
-        <dash.Charts />
+        <dash.Charts>
+          <GraficoMovimentacao />
+        </dash.Charts>
         <dash.Charts />
         <dash.Charts />
         <dash.Charts />
