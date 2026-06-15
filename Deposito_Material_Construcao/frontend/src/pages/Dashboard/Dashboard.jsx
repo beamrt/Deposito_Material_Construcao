@@ -7,6 +7,7 @@ import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import React from 'react';
 import GraficoProdutos from '../../components/Charts/BarChartProduct';
+import GraficoEstoque from '../../components/Charts/DonutChartEstoque';
 
 export default function Dashboard() {
   const dashKPIS = [
@@ -100,7 +101,9 @@ export default function Dashboard() {
         <dash.Charts>
           <GraficoProdutos />
         </dash.Charts>
-        <dash.Charts />
+        <dash.Charts>
+          <GraficoEstoque />
+        </dash.Charts>
         <dash.Charts />
         <dash.Charts />
         <dash.Charts />
