@@ -34,19 +34,13 @@ export default function Sidebar() {
         <FaChartLine className="chart" />
         <side.MenuText>Dashboard</side.MenuText>
       </side.MenuItem>
-      <side.MenuItem
-        $isActive={abaAtiva.includes('/constrular/estoque')}
-        onClick={() => navigate('/constrular/estoque')}
-      >
+      <side.MenuItem $isActive={abaAtiva === 'drop'}>
         <FaDropbox className="drop" />
         <side.MenuText>Estoque</side.MenuText>
       </side.MenuItem>
-      <side.MenuItem
-        $isActive={abaAtiva.includes('/constrular/usuarios')}
-        onClick={() => navigate('/constrular/usuarios')}
-      >
+      <side.MenuItem $isActive={abaAtiva === 'sett'}>
         <TbSettingsCog className="sett" />
-        <side.MenuText>Usuários</side.MenuText>
+        <side.MenuText>Configurações</side.MenuText>
       </side.MenuItem>
       <side.MenuItem $isActive={abaAtiva === 'file'}>
         <FaFile className="file" />
@@ -62,7 +56,7 @@ export default function Sidebar() {
       </side.MenuItem>
       <side.MenuItem
         $isActive={abaAtiva.includes('/constrular/produtos/')}
-        onClick={() => navigate('/constrular/produtos')}
+        onClick={() => navigate('/constrular/produtos/index')}
       >
         <FaProductHunt className="product" />
         <side.MenuText>Produtos</side.MenuText>

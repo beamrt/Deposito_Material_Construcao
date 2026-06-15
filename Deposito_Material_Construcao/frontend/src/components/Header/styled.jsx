@@ -7,9 +7,6 @@ export const Footer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  position: sticky;
-  z-index: 998;
-  top: 0;
 `;
 
 export const Logo = styled.h1`
@@ -32,7 +29,7 @@ export const Subtitle = styled.h3`
 export const DivIcon = styled.div`
   width: 10%;
   right: 40px;
-  top: 130px;
+  top: 115px;
   position: absolute;
 `;
 
