@@ -21,55 +21,61 @@ export const ChartTitle = styled.h3`
   text-align: center;
 `;
 
-export default function GraficoPedidosDiarios() {
+export default function GraficoEvolucaoVendas() {
   const series = [
     {
-      name: 'Total de Pedidos',
-      data: [34, 45, 23, 56, 78, 89, 30],
+      name: 'Faturamento',
+      data: [35000, 38200, 36500, 42000, 48500, 46000, 52000, 58000, 64500],
     },
   ];
 
   const options = {
     chart: {
-      id: 'pedidos-diarios',
+      id: 'evolucao-vendas',
+      type: 'line',
       toolbar: {
         show: true,
       },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '45%',
-        borderRadius: 6,
+      dropShadow: {
+        enabled: true,
+        color: '#000',
+        top: 14,
+        left: 0,
+        blur: 8,
+        opacity: 0.5,
       },
     },
     colors: ['#004787'],
-
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'light',
-        type: 'vertical',
-        shadeIntensity: 0.25,
-        gradientToColors: ['#0063be'],
-        inverseColors: false,
-        opacityFrom: 0.85,
-        opacityTo: 0.4,
-        stops: [0, 90, 100],
+    stroke: {
+      curve: 'smooth',
+      width: 4,
+    },
+    markers: {
+      size: 5,
+      colors: ['#fffff0'],
+      strokeColors: '#df6c01',
+      strokeWidth: 3,
+      hover: {
+        size: 8,
       },
     },
 
     dataLabels: {
-      enabled: true,
-      style: {
-        fontFamily: 'Poppins, sans-serif',
-        fontWeight: 600,
-        colors: ['#002e58'],
-      },
-      offsetY: -20,
+      enabled: false,
     },
+
     xaxis: {
-      categories: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+      categories: [
+        'Jan',
+        'Fev',
+        'Mar',
+        'Abr',
+        'Mai',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Set',
+      ],
       labels: {
         style: {
           fontFamily: 'Poppins, sans-serif',
@@ -83,21 +89,24 @@ export default function GraficoPedidosDiarios() {
         show: false,
       },
     },
-
     yaxis: {
       labels: {
         style: {
           fontFamily: 'Poppins, sans-serif',
+          fontSize: '13px',
+          fontWeight: 500,
           colors: '#252525',
+        },
+        formatter: function (val) {
+          return 'R$ ' + val.toLocaleString('pt-BR');
         },
       },
     },
+
     grid: {
-      show: true,
       borderColor: '#d9d9d9',
       strokeDashArray: 4,
     },
-
     tooltip: {
       theme: 'light',
       style: {
@@ -106,17 +115,22 @@ export default function GraficoPedidosDiarios() {
       },
       y: {
         formatter: function (val) {
-          return val + ' pedidos fechados';
+          return (
+            'R$ ' + val.toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+          );
         },
+      },
+      marker: {
+        show: false,
       },
     },
   };
 
   return (
     <ChartCard>
-      <ChartTitle>Volume de Pedidos Diários</ChartTitle>
+      <ChartTitle>Evolução de Vendas: (Últimos Trimestres)</ChartTitle>
 
-      <Chart options={options} series={series} type="bar" height={380} />
+      <Chart options={options} series={series} type="line" height={380} />
     </ChartCard>
   );
 }

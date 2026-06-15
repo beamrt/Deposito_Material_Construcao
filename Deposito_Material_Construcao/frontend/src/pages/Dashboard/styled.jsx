@@ -53,6 +53,7 @@ export const ContainerFilters = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 5px;
+  box-shadow: 4px 10px 10px rgba(0, 0, 0, 0.1);
 `;
 
 export const DivCards = styled.div`
@@ -171,10 +172,10 @@ export const ContainerKPIS = styled.div`
   display: grid;
   align-items: center;
   justify-content: center;
-  height: 150px;
+  min-height: 150px;
   margin-top: 10px;
   grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  gap: 20px;
   padding: 10px;
 `;
 
@@ -182,13 +183,20 @@ export const KPIS = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 10px;
+  padding: 20px;
   flex-direction: column;
-  border: 2px solid #df6c01;
+  border: 1px solid #d9d9d9;
   border-radius: 12px;
-  gap: 5px;
+  gap: 8px;
+  background: #fffff0;
+  box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
 
   span {
     color: #df6c01;
@@ -196,19 +204,29 @@ export const KPIS = styled.div`
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     font-style: normal;
+    line-height: 1.1;
   }
 
   .subtitle {
     color: #16aea3;
     font-size: 15px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    background: rgba(22, 174, 163, 0.15);
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 4px;
   }
 `;
 
 export const TitleKPI = styled.h3`
-  font-size: 18px;
+  font-size: 15px;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   color: #004787;
 `;
 
@@ -234,7 +252,6 @@ export const Charts = styled.div`
 
 export const LineCharts = styled.div`
   width: 100%;
-  height: 450px;
   display: flex;
   align-items: center;
   grid-column: 1 / -1;
@@ -242,4 +259,5 @@ export const LineCharts = styled.div`
   border: 2px solid #df6c01;
   border-radius: 12px;
   box-shadow: 8px 12px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
 `;

@@ -70,7 +70,7 @@ export default function GraficoEstoque() {
     <ChartCard>
       <ChartTitle>Distribuição do Estoque</ChartTitle>
 
-      <Chart options={options} series={series} type="pie" height={380} />
+      <Chart options={options} series={series} type="pie" height={395} />
     </ChartCard>
   );
 }

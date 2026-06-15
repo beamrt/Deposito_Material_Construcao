@@ -12,6 +12,7 @@ import GraficoSituacaoEstoque from '../../components/Charts/DonutChartEstoque';
 import GraficoTicketMedio from '../../components/Charts/BarChartTicket';
 import GraficoMovimentacao from '../../components/Charts/AgroupedBars';
 import GraficoPedidosDiarios from '../../components/Charts/BarChartPedidos';
+import GraficoEvolucaoVendas from '../../components/Charts/LineChart';
 
 export default function Dashboard() {
   const dashKPIS = [
@@ -120,7 +121,9 @@ export default function Dashboard() {
         <dash.Charts>
           <GraficoPedidosDiarios />
         </dash.Charts>
-        <dash.LineCharts />
+        <dash.LineCharts>
+          <GraficoEvolucaoVendas />
+        </dash.LineCharts>
       </dash.ContainerCharts>
 
       <Footer $isDashboard={true} />

@@ -112,7 +112,7 @@ export default function GraficoSituacaoEstoque() {
     <ChartCard>
       <ChartTitle>Status Geral do Estoque</ChartTitle>
 
-      <Chart options={options} series={series} type="donut" height={380} />
+      <Chart options={options} series={series} type="donut" height={395} />
     </ChartCard>
   );
 }
