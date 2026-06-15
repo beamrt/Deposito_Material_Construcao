@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 export const DivFooter = styled.footer`
-  width: 100%;
+  width: ${(props) => (props.$isDashboard ? 'calc(100% - 90px)' : '100%')};
+  margin-left: ${(props) => (props.$isDashboard ? '90px' : '0')};
   position: absolute;
   bottom: 0;
   left: 0;
