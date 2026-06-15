@@ -9,6 +9,7 @@ import React from 'react';
 import GraficoProdutos from '../../components/Charts/BarChartProduct';
 import GraficoEstoque from '../../components/Charts/PizzaChartEstoque';
 import GraficoSituacaoEstoque from '../../components/Charts/DonutChartEstoque';
+import GraficoTicketMedio from '../../components/Charts/BarChartTicket';
 
 export default function Dashboard() {
   const dashKPIS = [
@@ -108,7 +109,9 @@ export default function Dashboard() {
         <dash.Charts>
           <GraficoSituacaoEstoque />
         </dash.Charts>
-        <dash.Charts />
+        <dash.Charts>
+          <GraficoTicketMedio />
+        </dash.Charts>
         <dash.Charts />
         <dash.Charts />
         <dash.Charts />
