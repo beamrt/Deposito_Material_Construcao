@@ -14,6 +14,12 @@ from apps.estoque.views import (
     api_dashboard_estoque
 )
 from apps.lojas.views import api_lojas
+from apps.clientes.views import (
+    api_cliente_criar,
+    api_cliente_editar,
+    api_cliente_inativar,
+    api_endereco_gerenciar
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,9 +39,12 @@ urlpatterns = [
     path('api/estoque/transferir/', api_transferir_estoque, name='api_transferir_estoque'),
     path('api/estoque/dashboard/', api_dashboard_estoque, name='api_dashboard_estoque'),
 
-    # Lojas
     path('api/lojas/index', api_lojas, name='api_lojas'),
 
-    # Cadastro de Produtos
-    path('api/produtos/', include('apps.produtos.urls'))
+    path('api/produtos/', include('apps.produtos.urls')),
+
+    path('api/clientes/criar/', api_cliente_criar, name='api_cliente_criar'),
+    path('api/clientes/editar/<int:pk>/', api_cliente_editar, name='api_cliente_editar'),
+    path('api/clientes/inativar/<int:pk>/', api_cliente_inativar, name='api_cliente_inativar'),
+    path('api/clientes/<int:cliente_pk>/enderecos/', api_endereco_gerenciar, name='api_endereco_gerenciar')
 ]
