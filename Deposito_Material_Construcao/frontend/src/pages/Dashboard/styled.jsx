@@ -215,7 +215,7 @@ export const TitleKPI = styled.h3`
 export const ContainerCharts = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   gap: 20px;
   width: 90%;
   margin-left: 7.5%;
