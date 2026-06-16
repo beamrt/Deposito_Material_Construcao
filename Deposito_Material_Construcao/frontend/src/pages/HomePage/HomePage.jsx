@@ -31,12 +31,22 @@ export default function HomePage() {
     },
     {
       id: 3,
-      icon: <FaDropbox className="Box" />,
+      icon: (
+        <FaDropbox
+          className="Box"
+          onClick={() => navigate('/constrular/estoque')}
+        />
+      ),
       title: 'Estoque',
     },
     {
       id: 4,
-      icon: <TbSettingsCog className="Settings" />,
+      icon: (
+        <TbSettingsCog
+          className="Settings"
+          onClick={() => navigate('/constrular/usuarios/index')}
+        />
+      ),
       title: 'Configurações',
     },
   ];
@@ -66,7 +76,10 @@ export default function HomePage() {
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Estoque'}
-                onClick={() => setAbaAtiva('Estoque')}
+                onClick={() => {
+                  setAbaAtiva('Estoque');
+                  navigate('/constrular/estoque');
+                }}
               >
                 Estoque
               </home.List>

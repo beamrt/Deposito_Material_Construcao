@@ -13,9 +13,10 @@ export const ContainerSide = styled.div`
   padding: 0 0 20px 16px;
   transition: all 0.5s ease-in-out;
   overflow: hidden;
-  position: relative;
-  z-index: 999;
+  z-index: 997;
   position: fixed;
+  top: 0;
+  left: 0;
 
   &::before {
     content: '';
@@ -107,6 +108,7 @@ export const DivIcon = styled.div`
   border-radius: 50%;
   margin-left: 5px;
   transition: all 0.2s ease-in-out;
+  margin-top: 30px;
 
   ${ContainerSide}:hover & {
     margin-left: 75px;
