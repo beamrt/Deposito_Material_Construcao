@@ -1,21 +1,83 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
-import { FaSearch } from 'react-icons/fa';
-import { FaFilter } from 'react-icons/fa';
-import { FaTruck } from 'react-icons/fa';
-import { FaEdit } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaTruck, FaEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
-import { IoIosArrowBack } from 'react-icons/io';
-import { IoIosArrowForward } from 'react-icons/io';
-import { FaArrowLeft } from 'react-icons/fa';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { IoMdCloseCircle } from 'react-icons/io';
-
 import * as estq from './styled';
 import Sidebar from '../../../components/Sidebar/Sidebar';
 import Header from '../../../components/Header/Header';
 
 export default function IndexEstoque() {
   const [boxAtiva, setBoxAtiva] = useState('');
+  
+  const [listaEstoque, setListaEstoque] = useState([]);
+
+  const [transferLojaDestino, setTransferLojaDestino] = useState('');
+  const [transferProdutoId, setTransferProdutoId] = useState('');
+  const [transferProdutoNome, setTransferProdutoNome] = useState('');
+  const [transferQtd, setTransferQtd] = useState('');
+
+  const carregarEstoque = async () => {
+    try {
+      const resposta = await fetch('http://localhost:8000/api/estoque/');
+      const dados = await resposta.json();
+      if (resposta.ok) {
+        setListaEstoque(dados.estoque || []);
+      }
+    } catch (erro) {
+      console.error("Erro ao buscar estoque do backend:", erro);
+    }
+  };
+
+  useEffect(() => {
+    carregarEstoque();
+  }, []);
+
+  const abrirModalTransferencia = (item) => {
+    setTransferProdutoId(item.id_produto);
+    setTransferProdutoNome(item.nome_produto); 
+    setTransferLojaDestino('');
+    setTransferQtd('');
+    setBoxAtiva('ModalTransfer');
+  };
+
+  const handleTransferir = async (e) => {
+    e.preventDefault();
+    
+    if (!transferLojaDestino || !transferQtd) {
+      alert('Por favor, preencha a filial de destino e a quantidade.');
+      return;
+    }
+
+    const payload = {
+      loja_origem: 1, 
+      loja_destino: parseInt(transferLojaDestino),
+      produtos: [
+        { id_produto: parseInt(transferProdutoId), qtd: parseInt(transferQtd) }
+      ]
+    };
+
+    try {
+      const resposta = await fetch('http://localhost:8000/api/transferencias/criar/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const dados = await resposta.json();
+
+      if (resposta.ok) {
+        alert('🎉 ' + dados.message); 
+        setBoxAtiva('');
+        carregarEstoque(); 
+      } else {
+        alert('❌ Erro: ' + dados.error);
+      }
+    } catch (erro) {
+      alert('Erro ao conectar com o servidor.');
+    }
+  };
 
   const handleConfirm = () => {
     confirmAlert({
@@ -52,8 +114,7 @@ export default function IndexEstoque() {
       <estq.ContainerTitle>
         <estq.Title>Controle de Estoque</estq.Title>
         <estq.Subtitle>
-          Acompanhe entradas, saídas e disponibilidade dos produtos em um só
-          lugar.
+          Acompanhe entradas, saídas e disponibilidade dos produtos em um só lugar.
         </estq.Subtitle>
       </estq.ContainerTitle>
 
@@ -68,7 +129,7 @@ export default function IndexEstoque() {
           <estq.DivLabel className="order">
             <estq.Label>Ordenar Por:</estq.Label>
             <estq.Select>
-              <option selected>Maior Qtd</option>
+              <option>Maior Qtd</option>
             </estq.Select>
           </estq.DivLabel>
         </estq.OrderedDiv>
@@ -109,7 +170,7 @@ export default function IndexEstoque() {
           <estq.TableHead>
             <tr>
               <th>Produto</th>
-              <th>Fornecedor</th>
+              <th>Categoria</th>
               <th>Qnt. Atual</th>
               <th>Est. Mínimo</th>
               <th>Status</th>
@@ -118,132 +179,52 @@ export default function IndexEstoque() {
           </estq.TableHead>
 
           <estq.TableBody>
-            <tr>
-              <td>Cimento CP-II</td>
-              <td>GlobalCimento Distribuição</td>
-              <td>25 un.</td>
-              <td>10 un.</td>
-              <td style={{ color: '#16AEA3' }}>Estável</td>
-              <td>
-                <estq.IconWrapper>
-                  <FaEdit
-                    className="edit"
-                    onClick={() => setBoxAtiva('ModalEdit')}
-                  />
-                  <FaTruck
-                    className="truck"
-                    onClick={() => setBoxAtiva('ModalTransfer')}
-                  />
-                  <MdDelete
-                    className="delete"
-                    onClick={() => handleConfirm()}
-                  />
-                </estq.IconWrapper>
-              </td>
-            </tr>
+            {listaEstoque.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+                  Nenhum produto em estoque.
+                </td>
+              </tr>
+            ) : (
+              listaEstoque.map((item) => (
+                <tr key={item.id_estoque}>
+                  <td>{item.nome_produto}</td>
+                  <td>{item.categoria}</td>
+                  <td>{item.quantidade} un.</td>
+                  <td>{item.estoque_minimo} un.</td>
+                  <td style={{ color: item.status_critico ? '#RED' : '#16AEA3' }}>
+                    {item.status_critico ? 'Crítico' : 'Estável'}
+                  </td>
+                  <td>
+                    <estq.IconWrapper>
+                      <FaEdit className="edit" onClick={() => setBoxAtiva('ModalEdit')} />
+                      
+                      <FaTruck className="truck" onClick={() => abrirModalTransferencia(item)} />
+                      
+                      <MdDelete className="delete" onClick={() => handleConfirm()} />
+                    </estq.IconWrapper>
+                  </td>
+                </tr>
+              ))
+            )}
           </estq.TableBody>
         </estq.StyledTable>
         <estq.TableFooter>
-          <span>Mostrando 0 de 0 Produtos</span>
-
+          <span>Mostrando {listaEstoque.length} de {listaEstoque.length} Produtos</span>
           <estq.Pagination>
-            <estq.PaginationArrow>
-              <IoIosArrowBack />
-            </estq.PaginationArrow>
-
+            <estq.PaginationArrow><IoIosArrowBack /></estq.PaginationArrow>
             <estq.PageButton active>1</estq.PageButton>
-
-            <estq.PaginationArrow>
-              <IoIosArrowForward />
-            </estq.PaginationArrow>
+            <estq.PaginationArrow><IoIosArrowForward /></estq.PaginationArrow>
           </estq.Pagination>
         </estq.TableFooter>
       </estq.ContainerTable>
-
-      {boxAtiva === 'ModalAdd' && (
-        <>
-          <estq.BackgroundOpacity onClick={() => setBoxAtiva('')}>
-            <estq.DivAdd onClick={(e) => e.stopPropagation()}>
-              <estq.AddWrapper>
-                <estq.DivClose>
-                  <FaArrowLeft
-                    className="close"
-                    onClick={() => setBoxAtiva('')}
-                  />
-                </estq.DivClose>
-
-                <estq.DivTitle>
-                  <estq.TitleAdd>Adicionar Produto</estq.TitleAdd>
-                </estq.DivTitle>
-
-                <estq.SearchProduct>
-                  <span>Produto</span>
-
-                  <estq.SelectOrder>
-                    <estq.Select>
-                      <option selected disabled>
-                        Inicia com
-                      </option>
-                    </estq.Select>
-                    <estq.Select>
-                      <option selected disabled>
-                        Contém
-                      </option>
-                    </estq.Select>
-                  </estq.SelectOrder>
-                  <estq.InputWrapper>
-                    <estq.Input placeholder="Buscar Produto" />
-                    <estq.DivSearch className="searchAdd">
-                      <FaSearch className="search" />
-                    </estq.DivSearch>
-                  </estq.InputWrapper>
-                </estq.SearchProduct>
-
-                <estq.SearchProduct>
-                  <span>Fornecedor</span>
-
-                  <estq.InputWrapper>
-                    <estq.Input placeholder="Buscar Fornecedor" />
-                    <estq.DivSearch className="searchAdd">
-                      <FaSearch className="search" />
-                    </estq.DivSearch>
-                  </estq.InputWrapper>
-                </estq.SearchProduct>
-
-                <estq.SearchProduct>
-                  <span>Quantidade</span>
-                  <estq.SelectOrder>
-                    <estq.Input type="number" />
-                  </estq.SelectOrder>
-                </estq.SearchProduct>
-                <estq.SearchProduct>
-                  <span>Estoque Mínimo</span>
-                  <estq.SelectOrder>
-                    <estq.Input type="number" />
-                  </estq.SelectOrder>
-                </estq.SearchProduct>
-
-                <estq.DivButtonsAdd>
-                  <estq.ButtonAdd>Salvar</estq.ButtonAdd>
-                  <estq.ButtonCancel onClick={() => setBoxAtiva('')}>
-                    Cancelar
-                  </estq.ButtonCancel>
-                </estq.DivButtonsAdd>
-              </estq.AddWrapper>
-            </estq.DivAdd>
-          </estq.BackgroundOpacity>
-        </>
-      )}
 
       {boxAtiva === 'ModalTransfer' && (
         <>
           <estq.BackgroundOpacity onClick={() => setBoxAtiva('')}>
             <estq.DivBox onClick={(e) => e.stopPropagation()}>
               <estq.DivCloseX>
-                <IoMdCloseCircle
-                  className="closeX"
-                  onClick={() => setBoxAtiva('')}
-                />
+                <IoMdCloseCircle className="closeX" onClick={() => setBoxAtiva('')} />
               </estq.DivCloseX>
 
               <estq.DivTitle>
@@ -251,59 +232,36 @@ export default function IndexEstoque() {
               </estq.DivTitle>
 
               <estq.Form>
-                <estq.Input placeholder="Nome do Produto" />
-                <estq.Input placeholder="Filial" />
-                <estq.Input type="number" placeholder="Quantidade" />
+                <estq.Input 
+                  value={`Produto: ${transferProdutoNome}`} 
+                  disabled 
+                  style={{ backgroundColor: '#f0f0f0', color: '#555', cursor: 'not-allowed' }}
+                />
+                
+                <estq.Select
+                  value={transferLojaDestino}
+                  onChange={(e) => setTransferLojaDestino(e.target.value)}
+                  style={{ width: '100%', padding: '10px', marginBottom: '15px', borderRadius: '5px' }}
+                >
+                  <option value="" disabled>Selecione a Filial de Destino</option>
+                  <option value="2">Loja Filial (ID: 2)</option>
+                </estq.Select>
+
+                <estq.Input 
+                  type="number" 
+                  placeholder="Quantidade a Transferir" 
+                  value={transferQtd}
+                  onChange={(e) => setTransferQtd(e.target.value)}
+                />
 
                 <estq.DivButtonsAdd>
-                  <estq.ButtonAdd>Transferir</estq.ButtonAdd>
-                  <estq.ButtonCancel>Cancelar</estq.ButtonCancel>
+                  <estq.ButtonAdd onClick={handleTransferir}>Transferir</estq.ButtonAdd>
+                  <estq.ButtonCancel onClick={() => setBoxAtiva('')}>Cancelar</estq.ButtonCancel>
                 </estq.DivButtonsAdd>
               </estq.Form>
             </estq.DivBox>
           </estq.BackgroundOpacity>
         </>
-      )}
-
-      {boxAtiva === 'ModalEdit' && (
-        <estq.BackgroundOpacity onClick={() => setBoxAtiva('')}>
-          <estq.DivBoxEdit onClick={(e) => e.stopPropagation()}>
-            <estq.DivCloseX>
-              <IoMdCloseCircle
-                className="closeX"
-                onClick={() => setBoxAtiva('')}
-              />
-            </estq.DivCloseX>
-
-            <estq.DivTitle>
-              <estq.TitleAdd>Editar Estoque</estq.TitleAdd>
-            </estq.DivTitle>
-
-            <estq.Form>
-              <estq.FormEdit>
-                <estq.FormWrapper>
-                  <estq.DivLabelInput>
-                    <estq.Label>Fornecedor</estq.Label>
-                    <estq.InputEdit />
-                  </estq.DivLabelInput>
-                  <estq.DivLabelInput>
-                    <estq.Label>Quantidade</estq.Label>
-                    <estq.InputEdit />
-                  </estq.DivLabelInput>
-                  <estq.DivLabelInput>
-                    <estq.Label>Estoque Mínimo</estq.Label>
-                    <estq.InputEdit />
-                  </estq.DivLabelInput>
-                </estq.FormWrapper>
-
-                <estq.DivButtonsAdd>
-                  <estq.ButtonAdd>Salvar</estq.ButtonAdd>
-                  <estq.ButtonCancel>Cancelar</estq.ButtonCancel>
-                </estq.DivButtonsAdd>
-              </estq.FormEdit>
-            </estq.Form>
-          </estq.DivBoxEdit>
-        </estq.BackgroundOpacity>
       )}
     </>
   );

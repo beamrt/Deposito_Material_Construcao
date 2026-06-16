@@ -39,7 +39,7 @@ export default function Cadastro() {
             </cad.ContainerLabel>
 
             <cad.ContainerLabel>
-              <cad.Label>Preço de Lucro</cad.Label>
+              <cad.Label>Preço de Compra</cad.Label>
               <cad.Select />
             </cad.ContainerLabel>
 
