@@ -10,7 +10,6 @@ from apps.auditoria.views import api_auditoria
 from apps.estoque.views import (
     api_estoque_list, 
     api_movimentar_estoque, 
-    api_transferir_estoque, 
     api_dashboard_estoque
 )
 from apps.lojas.views import api_lojas
@@ -36,7 +35,6 @@ urlpatterns = [
     
     path('api/estoque/', api_estoque_list, name='api_estoque_list'),
     path('api/estoque/movimentar/', api_movimentar_estoque, name='api_movimentar_estoque'),
-    path('api/estoque/transferir/', api_transferir_estoque, name='api_transferir_estoque'),
     path('api/estoque/dashboard/', api_dashboard_estoque, name='api_dashboard_estoque'),
 
     path('api/lojas/index', api_lojas, name='api_lojas'),
@@ -46,5 +44,7 @@ urlpatterns = [
     path('api/clientes/criar/', api_cliente_criar, name='api_cliente_criar'),
     path('api/clientes/editar/<int:pk>/', api_cliente_editar, name='api_cliente_editar'),
     path('api/clientes/inativar/<int:pk>/', api_cliente_inativar, name='api_cliente_inativar'),
-    path('api/clientes/<int:cliente_pk>/enderecos/', api_endereco_gerenciar, name='api_endereco_gerenciar')
+    path('api/clientes/<int:cliente_pk>/enderecos/', api_endereco_gerenciar, name='api_endereco_gerenciar'),
+    path('api/clientes/', include('apps.clientes.urls')),
+    path('api/transferencias/', include('apps.transferencias.urls'))
 ]

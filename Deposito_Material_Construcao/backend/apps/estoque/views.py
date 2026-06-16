@@ -73,7 +73,6 @@ def api_estoque_list(request):
                     localizacao=localizacao
                 )
                 
-                # Salvando no formato exato das colunas do seu banco
                 AuditLog.objects.create(
                     id_usuario=usuario_obj,
                     acao='CADASTRO_INICIAL',
@@ -126,7 +125,6 @@ def api_movimentar_estoque(request):
 
                 estoque.save()
 
-                # Salvando movimentação bem-sucedida usando suas colunas reais
                 AuditLog.objects.create(
                     id_usuario=usuario_obj,
                     acao=tipo,
@@ -138,68 +136,6 @@ def api_movimentar_estoque(request):
             return JsonResponse({'message': 'Movimentação processada!', 'saldo_atual': estoque.quantidade})
         except Estoque.DoesNotExist:
             return JsonResponse({'error': 'Estoque não encontrado para este produto nesta loja.'}, status=404)
-        except Exception as err:
-            return JsonResponse({'error': str(err)}, status=500)
-
-
-@csrf_exempt
-def api_transferir_estoque(request):
-    if request.method == 'POST':
-        try:
-            body = json.loads(request.body)
-            id_produto = body.get('id_produto')
-            id_loja_origem = body.get('id_loja_origem')
-            id_loja_destino = body.get('id_loja_destino')
-            quantidade = int(body.get('quantidade', 0))
-            id_usuario = body.get('id_usuario', 1)
-        except Exception:
-            return JsonResponse({'error': 'Dados inválidos.'}, status=400)
-
-        if id_loja_origem == id_loja_destino:
-            return JsonResponse({'error': 'As unidades de origem e destino devem ser diferentes.'}, status=400)
-
-        if quantidade <= 0:
-            return JsonResponse({'error': 'A quantidade de transferência deve ser maior que zero.'}, status=400)
-
-        try:
-            produto_obj = Produto.objects.get(pk=id_produto)
-            loja_origem_obj = Loja.objects.get(pk=id_loja_origem)
-            loja_destino_obj = Loja.objects.get(pk=id_loja_destino)
-            usuario_obj = Usuario.objects.get(pk=id_usuario)
-
-            with transaction.atomic():
-                estoque_origem = Estoque.objects.select_for_update().get(id_produto=produto_obj, id_loja=loja_origem_obj)
-                
-                if estoque_origem.quantidade < quantidade:
-                    return JsonResponse({'error': 'Saldo insuficiente na unidade de origem.'}, status=400)
-                
-                estoque_destino, created = Estoque.objects.select_for_update().get_or_create(
-                    id_produto=produto_obj,
-                    id_loja=loja_destino_obj,
-                    defaults={'quantidade': 0, 'estoque_minimo': 0}
-                )
-
-                origem_anterior = estoque_origem.quantidade
-                destino_anterior = estoque_destino.quantidade
-
-                estoque_origem.quantidade -= quantidade
-                estoque_destino.quantidade += quantidade
-
-                estoque_origem.save()
-                estoque_destino.save()
-
-                # Registro de Transferência
-                AuditLog.objects.create(
-                    id_usuario=usuario_obj,
-                    acao='TRANSFERENCIA',
-                    tabela_afetada='estoque',
-                    id_registro=estoque_origem.id_estoque,
-                    detalhes=f"Transferido {quantidade} un do produto '{produto_obj.nome}' da Loja '{loja_origem_obj.nome}' (Anterior: {origem_anterior} | Atual: {estoque_origem.quantidade}) para Loja '{loja_destino_obj.nome}' (Anterior: {destino_anterior} | Atual: {estoque_destino.quantidade})."
-                )
-
-            return JsonResponse({'message': 'Transferência concluída com sucesso!'})
-        except Estoque.DoesNotExist:
-            return JsonResponse({'error': 'Registro de estoque de origem não localizado.'}, status=404)
         except Exception as err:
             return JsonResponse({'error': str(err)}, status=500)
 

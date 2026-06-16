@@ -7,6 +7,9 @@ from django.core.exceptions import ValidationError
 from django.apps import apps
 from .models import Cliente, ClienteEndereco
 from .validators import validar_cpf_cnpj, validar_cep
+from django.core.paginator import Paginator
+from django.db.models import Q
+from apps.usuarios.models import UsuarioLoja
 
 def registrar_auditoria(request, acao, cliente_id, valores_alterados):
     try:
@@ -145,7 +148,6 @@ def api_endereco_gerenciar(request, cliente_pk):
             if not validar_cep(cep):
                 return JsonResponse({'error': 'Invalid CEP format'}, status=400)
 
-            # Criando o endereço isolado de acordo com as colunas reais da sua tabela 'endereco'
             endereco = ClienteEndereco.objects.create(
                 rua=rua,
                 numero=numero,
@@ -160,3 +162,78 @@ def api_endereco_gerenciar(request, cliente_pk):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def api_cliente_listar(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    clientes = Cliente.objects.all()
+    if not request.user.is_superuser:
+        pass 
+
+    termo = request.GET.get('q', '')
+    if termo:
+        clientes = clientes.filter(Q(nome__icontains=termo) | Q(cpf_cnpj__icontains=termo))
+
+    clientes = clientes.order_by('nome')
+
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(clientes, 10) 
+    page_obj = paginator.get_page(page_number)
+
+    data = [{
+        'id': c.id_cliente,
+        'nome': c.nome,
+        'cpf_cnpj': c.cpf_cnpj
+    } for c in page_obj]
+
+    return JsonResponse({
+        'clientes': data,
+        'total_paginas': paginator.num_pages,
+        'pagina_atual': page_obj.number
+    })
+
+@csrf_exempt
+def api_cliente_listar(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    clientes = Cliente.objects.all()
+
+    if request.user and request.user.is_authenticated:
+        if not request.user.is_superuser:
+            try:
+                usuario_loja = UsuarioLoja.objects.get(id_usuario=request.user.id)
+                clientes = clientes.filter(id_loja=usuario_loja.id_loja)
+            except UsuarioLoja.DoesNotExist:
+                clientes = Cliente.objects.none()
+
+    termo = request.GET.get('q', '')
+    if termo:
+        clientes = clientes.filter(Q(nome__icontains=termo) | Q(cpf_cnpj__icontains=termo))
+
+    clientes = clientes.order_by('nome')
+
+    try:
+        page_number = int(request.GET.get('page', 1))
+    except ValueError:
+        page_number = 1
+        
+    paginator = Paginator(clientes, 6)
+    page_obj = paginator.get_page(page_number)
+
+    data = [{
+        'id': c.id_cliente,
+        'nome': c.nome,
+        'cpf_cnpj': c.cpf_cnpj,
+        'telefone': c.telefone,
+        'email': c.email
+    } for c in page_obj]
+
+    return JsonResponse({
+        'clientes': data,
+        'total_paginas': paginator.num_pages,
+        'pagina_atual': page_obj.number,
+        'total_clientes': paginator.count
+    })
