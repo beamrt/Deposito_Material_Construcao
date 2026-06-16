@@ -56,7 +56,7 @@ export default function Dashboard() {
 
       <dash.ContainerFilters>
         <dash.DivCards>
-          <dash.Input placeholder="Buscar produtos, estoque..." />
+          <dash.Input placeholder="Buscar produtos, Estoque..." />
           <dash.DivSearch>
             <FaSearch className="search" />
           </dash.DivSearch>
