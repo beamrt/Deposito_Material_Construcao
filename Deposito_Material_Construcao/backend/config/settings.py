@@ -161,9 +161,18 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# 🔴 SUBSTITUA AQUI COM OS SEUS DADOS DO GOOGLE:
+
 EMAIL_HOST_USER = 'marquinhosrodrig1022@gmail.com'  
 EMAIL_HOST_PASSWORD = 'iystzohqkpuyagpj'     
 
-# O remetente que as pessoas vão ver ao abrir a mensagem
+
 DEFAULT_FROM_EMAIL = f'Sistema Construshop <{EMAIL_HOST_USER}>'
+
+
+import sys
+if 'test' in sys.argv and DATABASES.get('default', {}).get('NAME') == ':memory:':
+    TEST_RUNNER = 'clientes.runner.ManagedModelTestRunner'
+    
+    
+
+TEST_RUNNER = 'apps.clientes.runner.ManagedModelTestRunner'
