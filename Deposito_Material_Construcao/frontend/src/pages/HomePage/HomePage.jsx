@@ -89,7 +89,10 @@ export default function HomePage() {
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Finanças'}
-                onClick={() => setAbaAtiva('Finanças')}
+                onClick={() => {
+                  setAbaAtiva('Finanças');
+                  navigate('/constrular/financas');
+                }}
               >
                 Finanças
               </home.List>

@@ -62,7 +62,10 @@ export default function Sidebar() {
         <FaCartArrowDown className="cart" />
         <side.MenuText>Vendas</side.MenuText>
       </side.MenuItem>
-      <side.MenuItem $isActive={abaAtiva === 'money'}>
+      <side.MenuItem
+        $isActive={abaAtiva.includes('/constrular/financas')}
+        onClick={() => navigate('/constrular/financas')}
+      >
         <FaMoneyBill className="money" />
         <side.MenuText>Finanças</side.MenuText>
       </side.MenuItem>
