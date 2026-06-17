@@ -169,4 +169,20 @@ export const Charts = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 8px 10px 12px rgba(0, 0, 0, 0.05);
+`;
+
+export const ContainerLineChart = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 85%;
+  margin-left: 9%;
+  padding: 5px;
+  height: 400px;
+  border: 1px solid #df6c01;
+  border-radius: 12px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  box-shadow: 8px 10px 12px rgba(0, 0, 0, 0.15);
 `;

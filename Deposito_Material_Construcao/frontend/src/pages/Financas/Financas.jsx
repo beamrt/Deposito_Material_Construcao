@@ -5,6 +5,7 @@ import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import GraficoMetodoPagamentos from '../../components/Charts/Financas/BarChartPagamentos';
 import GraficoLucroMensal from '../../components/Charts/Financas/AgroupedBarLucro';
+import GraficoComparativoFiliais from '../../components/Charts/Financas/LineChartFilial';
 
 export default function Financas() {
   return (
@@ -58,6 +59,10 @@ export default function Financas() {
           <GraficoLucroMensal />
         </fin.Charts>
       </fin.ContainerChartsTop>
+
+      <fin.ContainerLineChart>
+        <GraficoComparativoFiliais />
+      </fin.ContainerLineChart>
     </>
   );
 }
