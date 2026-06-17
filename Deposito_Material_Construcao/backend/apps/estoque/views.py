@@ -8,6 +8,7 @@ from apps.auditoria.models import AuditLog
 from apps.produtos.models import Produto
 from apps.lojas.models import Loja
 from apps.usuarios.models import Usuario
+from django.utils import timezone
 
 @csrf_exempt
 def api_estoque_list(request):
@@ -35,6 +36,7 @@ def api_estoque_list(request):
             'quantidade': e.quantidade,
             'estoque_minimo': e.estoque_minimo,
             'estoque_maximo': e.estoque_maximo,
+            'fornecedor': getattr(e, 'fornecedor', ''),
             'localizacao': e.localizacao,
             'status_critico': e.quantidade <= e.estoque_minimo,
             'data_atualizacao': e.data_atualizacao
@@ -50,6 +52,7 @@ def api_estoque_list(request):
             quantidade = int(body.get('quantidade', 0))
             estoque_minimo = int(body.get('estoque_minimo', 0))
             estoque_maximo = body.get('estoque_maximo')
+            fornecedor = body.get('fornecedor', '')
             localizacao = body.get('localizacao')
             id_usuario = body.get('id_usuario', 1)
         except Exception:
@@ -70,7 +73,8 @@ def api_estoque_list(request):
                     quantidade=quantidade,
                     estoque_minimo=estoque_minimo,
                     estoque_maximo=int(estoque_maximo) if estoque_maximo else None,
-                    localizacao=localizacao
+                    localizacao=localizacao,
+                    fornecedor=fornecedor
                 )
                 
                 AuditLog.objects.create(
@@ -102,7 +106,7 @@ def api_movimentar_estoque(request):
         try:
             produto_obj = Produto.objects.get(pk=id_produto)
             loja_obj = Loja.objects.get(pk=id_loja)
-            usuario_obj = Usuario.objects.get(pk=id_usuario)
+            usuario_obj = Usuario.objects.filter(pk=id_usuario).first()
 
             with transaction.atomic():
                 estoque = Estoque.objects.select_for_update().get(id_produto=produto_obj, id_loja=loja_obj)
@@ -175,3 +179,194 @@ def api_dashboard_estoque(request):
             'produtos_baixo_estoque': criticos_data,
             'movimentacoes_recentes': recentes_data
         })
+
+@csrf_exempt
+def api_estoque_entrada(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método não permitido.'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        loja_id = data.get('id_loja')
+        produto_id = data.get('id_produto')
+        quantidade = int(data.get('quantidade', 0))
+        fornecedor = data.get('fornecedor', 'Não informado')
+        observacao = data.get('observacao', '')
+        usuario = data.get('usuario', 'Sistema') 
+
+        if quantidade <= 0:
+            return JsonResponse({'error': 'A quantidade de entrada deve ser maior que zero.'}, status=400)
+
+        with transaction.atomic():
+            loja = Loja.objects.get(pk=loja_id)
+            produto = Produto.objects.get(pk=produto_id)
+
+            estoque, created = Estoque.objects.select_for_update().get_or_create(
+                id_loja=loja,
+                id_produto=produto,
+                defaults={'quantidade': 0, 'estoque_minimo': 10}
+            )
+
+            estoque.quantidade += quantidade
+            estoque.data_atualizacao = timezone.now()
+            estoque.save()
+
+        recibo = {
+            "tipo": "ENTRADA",
+            "id_loja": loja_id,
+            "id_produto": produto_id,
+            "nome_produto": produto.nome,
+            "quantidade": quantidade,
+            "fornecedor": fornecedor,
+            "observacao": observacao,
+            "usuario": usuario,
+            "data_movimentacao": timezone.now().isoformat()
+        }
+
+        return JsonResponse({'message': f'Sucesso! {quantidade} unidades adicionadas ao estoque.'}, status=200)
+
+    except Loja.DoesNotExist:
+        return JsonResponse({'error': 'Loja não encontrada.'}, status=404)
+    except Produto.DoesNotExist:
+        return JsonResponse({'error': 'Produto não encontrado.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': f'Erro interno: {str(e)}'}, status=500)
+
+
+@csrf_exempt
+def api_estoque_saida(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método não permitido.'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        loja_id = data.get('id_loja')
+        produto_id = data.get('id_produto')
+        quantidade = int(data.get('quantidade', 0))
+        motivo = data.get('motivo', 'Venda')
+        observacao = data.get('observacao', '')
+        usuario = data.get('usuario', 'Sistema')
+
+        if quantidade <= 0:
+            return JsonResponse({'error': 'A quantidade de saída deve ser maior que zero.'}, status=400)
+
+        with transaction.atomic():
+            loja = Loja.objects.get(pk=loja_id)
+            produto = Produto.objects.get(pk=produto_id)
+
+            try:
+                estoque = Estoque.objects.select_for_update().get(id_loja=loja, id_produto=produto)
+            except Estoque.DoesNotExist:
+                return JsonResponse({'error': 'Produto não existe no estoque desta loja.'}, status=400)
+
+            if estoque.quantidade < quantidade:
+                return JsonResponse({'error': f'Saldo insuficiente! Quantidade atual: {estoque.quantidade}.'}, status=400)
+
+            estoque.quantidade -= quantidade
+            estoque.data_atualizacao = timezone.now()
+            estoque.save()
+
+        recibo = {
+            "tipo": "SAIDA",
+            "id_loja": loja_id,
+            "id_produto": produto_id,
+            "nome_produto": produto.nome,
+            "quantidade": quantidade,
+            "motivo": motivo,
+            "observacao": observacao,
+            "usuario": usuario,
+            "data_movimentacao": timezone.now().isoformat()
+        }
+
+        return JsonResponse({'message': f'Sucesso! Baixa de {quantidade} unidades realizada.'}, status=200)
+
+    except Loja.DoesNotExist:
+        return JsonResponse({'error': 'Loja não encontrada.'}, status=404)
+    except Produto.DoesNotExist:
+        return JsonResponse({'error': 'Produto não encontrado.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': f'Erro interno: {str(e)}'}, status=500)
+    
+@csrf_exempt
+def api_estoque_editar(request, id_estoque):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            
+            novo_fornecedor = data.get('fornecedor')
+            nova_qtd = data.get('quantidade')
+            novo_minimo = data.get('estoque_minimo')
+            
+            estoque_item = Estoque.objects.get(pk=id_estoque)
+            
+            if novo_fornecedor is not None:
+                estoque_item.fornecedor = novo_fornecedor
+            if nova_qtd is not None:
+                estoque_item.quantidade = nova_qtd
+            if novo_minimo is not None:
+                estoque_item.estoque_minimo = novo_minimo
+                
+            estoque_item.data_atualizacao = timezone.now()
+            estoque_item.save()
+            
+            return JsonResponse({'message': 'Estoque atualizado com sucesso!'}, status=200)
+        except Estoque.DoesNotExist:
+            return JsonResponse({'error': 'Item de estoque não encontrado.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+            
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+def api_estoque_deletar(request, id_estoque):
+    if request.method == 'DELETE':
+        try:
+            estoque_item = Estoque.objects.get(pk=id_estoque)
+            estoque_item.delete()
+            return JsonResponse({'message': 'Item removido do estoque físico com sucesso!'}, status=200)
+        except Estoque.DoesNotExist:
+            return JsonResponse({'error': 'Item de estoque não encontrado.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+            
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+def api_criar_transferencia(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            loja_origem_id = data.get('loja_origem')
+            loja_destino_id = data.get('loja_destino')
+            produtos = data.get('produtos', [])
+
+            loja_origem = Loja.objects.get(pk=loja_origem_id)
+            loja_destino = Loja.objects.get(pk=loja_destino_id)
+
+            with transaction.atomic():
+                for p in produtos:
+                    prod_id = p.get('id_produto')
+                    qtd_transferir = p.get('qtd')
+
+                    produto_obj = Produto.objects.get(pk=prod_id)
+
+                    estoque_origem = Estoque.objects.select_for_update().get(id_loja=loja_origem, id_produto=produto_obj)
+                    if estoque_origem.quantidade < qtd_transferir:
+                        return JsonResponse({'error': f'Saldo insuficiente no produto {produto_obj.nome}'}, status=400)
+
+                    estoque_origem.quantidade -= qtd_transferir
+                    estoque_origem.save()
+
+                    estoque_destino, created = Estoque.objects.select_for_update().get_or_create(
+                        id_loja=loja_destino,
+                        id_produto=produto_obj,
+                        defaults={'quantidade': 0, 'estoque_minimo': 5}
+                    )
+                    estoque_destino.quantidade += qtd_transferir
+                    estoque_destino.save()
+
+            return JsonResponse({'message': 'Transferência entre filiais concluída com sucesso!'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+            
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
