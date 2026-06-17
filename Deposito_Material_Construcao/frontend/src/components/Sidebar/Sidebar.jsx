@@ -51,7 +51,10 @@ export default function Sidebar() {
         <TbSettingsCog className="sett" />
         <side.MenuText>Usuários</side.MenuText>
       </side.MenuItem>
-      <side.MenuItem $isActive={abaAtiva === 'file'}>
+      <side.MenuItem
+        $isActive={abaAtiva.includes('/constrular/relatorios')}
+        onClick={() => navigate('/constrular/relatorios')}
+      >
         <FaFile className="file" />
         <side.MenuText>Relatórios</side.MenuText>
       </side.MenuItem>

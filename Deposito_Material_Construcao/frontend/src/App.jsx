@@ -11,6 +11,7 @@ import ProdutosRoutes from './routes/ProdutosRoutes/ProdutosRoutes';
 import UsersRoutes from './routes/UsersRoutes/UsersRoutes';
 import EstoqueRoutes from './routes/EstoqueRoutes/EstoqueRoutes';
 import DashboardRoutes from './routes/DashboardRoutes/DashboardRoutes';
+import RelatorioRoutes from './routes/RelatorioRoutes/RelatorioRoutes';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/constrular/usuarios/*" element={<UsersRoutes />} />
         <Route path="/constrular/estoque/*" element={<EstoqueRoutes />} />
         <Route path="/constrular/dashboard" element={<DashboardRoutes />} />
+        <Route path="/constrular/relatorios" element={<RelatorioRoutes />} />
       </Routes>
 
       {/* ToastContainer */}

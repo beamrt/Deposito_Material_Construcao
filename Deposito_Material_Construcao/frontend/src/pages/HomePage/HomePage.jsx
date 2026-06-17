@@ -17,37 +17,26 @@ export default function HomePage() {
       id: 1,
       icon: <FaFile className="Relat" />,
       title: 'Relatório',
+      path: '/constrular/relatorios',
     },
 
     {
       id: 2,
-      icon: (
-        <FaChartLine
-          className="Dash"
-          onClick={() => navigate('/constrular/dashboard')}
-        />
-      ),
+      icon: <FaChartLine className="Dash" />,
       title: 'Dashboard',
+      path: '/constrular/dashboard',
     },
     {
       id: 3,
-      icon: (
-        <FaDropbox
-          className="Box"
-          onClick={() => navigate('/constrular/estoque')}
-        />
-      ),
+      icon: <FaDropbox className="Box" />,
       title: 'Estoque',
+      path: '/constrular/estoque',
     },
     {
       id: 4,
-      icon: (
-        <TbSettingsCog
-          className="Settings"
-          onClick={() => navigate('/constrular/usuarios/index')}
-        />
-      ),
+      icon: <TbSettingsCog className="Settings" />,
       title: 'Configurações',
+      path: '/constrular/usuarios',
     },
   ];
 
@@ -119,7 +108,7 @@ export default function HomePage() {
 
         <home.DivBoxes>
           {arrayBoxes.map((card) => (
-            <home.Boxes key={card.id}>
+            <home.Boxes key={card.id} onClick={() => navigate(card.path)}>
               {card.icon}
               <p>{card.title}</p>
             </home.Boxes>
