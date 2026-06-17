@@ -111,7 +111,8 @@ export const ContainerFilter = styled.div`
   border-radius: 12px;
   border: 1px solid #df6c01;
   box-shadow: 8px 10px 10px rgba(0, 0, 0, 0.1);
-  margin: 5px auto;
+  margin-top: 5px;
+  margin-left: 14.5%;
   gap: 20px;
   padding: 10px;
 `;
