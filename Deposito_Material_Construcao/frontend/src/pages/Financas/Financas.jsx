@@ -4,6 +4,7 @@ import * as fin from './styled';
 import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import GraficoMetodoPagamentos from '../../components/Charts/Financas/BarChartPagamentos';
+import GraficoLucroMensal from '../../components/Charts/Financas/AgroupedBarLucro';
 
 export default function Financas() {
   return (
@@ -53,7 +54,9 @@ export default function Financas() {
         <fin.Charts>
           <GraficoMetodoPagamentos />
         </fin.Charts>
-        <fin.Charts />
+        <fin.Charts>
+          <GraficoLucroMensal />
+        </fin.Charts>
       </fin.ContainerChartsTop>
     </>
   );
