@@ -1,4 +1,10 @@
-import { FaFilter } from 'react-icons/fa';
+import {
+  FaArrowDown,
+  FaArrowUp,
+  FaCashRegister,
+  FaDollarSign,
+  FaFilter,
+} from 'react-icons/fa';
 
 import * as fin from './styled';
 import Header from '../../components/Header/Header';
@@ -63,6 +69,79 @@ export default function Financas() {
       <fin.ContainerLineChart>
         <GraficoComparativoFiliais />
       </fin.ContainerLineChart>
+
+      <fin.ContainerKPIS>
+        <fin.FluxoTitleSection>
+          Fluxo de Caixa do Período Selecionado
+        </fin.FluxoTitleSection>
+
+        <fin.FluxoCard
+          $color="#1abc12"
+          $bgcolor="linear-gradient(135deg, #fffff 0%, #f0fdf4 100%)"
+          $operator="+"
+          $delay="0.1s"
+        >
+          <fin.FluxoHeader>
+            <fin.FluxoLabel>Saldo Inicial</fin.FluxoLabel>
+          </fin.FluxoHeader>
+          <fin.FluxoBody>
+            <fin.FluxoValue>R$ 10.245,84</fin.FluxoValue>
+            <fin.FluxoIconWrapper $color="#1abc12">
+              <FaCashRegister />
+            </fin.FluxoIconWrapper>
+          </fin.FluxoBody>
+        </fin.FluxoCard>
+
+        <fin.FluxoCard
+          $color="#1ABC12"
+          $bgColor="linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)"
+          $operator="-"
+          $delay="0.2s"
+        >
+          <fin.FluxoHeader>
+            <fin.FluxoLabel>Entradas</fin.FluxoLabel>
+          </fin.FluxoHeader>
+          <fin.FluxoBody>
+            <fin.FluxoValue>R$ 42.650,00</fin.FluxoValue>
+            <fin.FluxoIconWrapper $color="#1abc12">
+              <FaArrowUp />
+            </fin.FluxoIconWrapper>
+          </fin.FluxoBody>
+        </fin.FluxoCard>
+
+        <fin.FluxoCard
+          $color="#d32f2f"
+          $bgColor="linear-gradient(135deg, #ffffff 0%, #fef2f2 100%)"
+          $operator="="
+          $delay="0.3s"
+        >
+          <fin.FluxoHeader>
+            <fin.FluxoLabel>Saidas</fin.FluxoLabel>
+          </fin.FluxoHeader>
+          <fin.FluxoBody>
+            <fin.FluxoValue>R$ 2.400,00</fin.FluxoValue>
+            <fin.FluxoIconWrapper $color="#d32f2f">
+              <FaArrowDown />
+            </fin.FluxoIconWrapper>
+          </fin.FluxoBody>
+        </fin.FluxoCard>
+
+        <fin.FluxoCard
+          $color="#0063be"
+          $bgColor="linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%)"
+          $delay="0.4s"
+        >
+          <fin.FluxoHeader>
+            <fin.FluxoLabel>Saldo Final</fin.FluxoLabel>
+          </fin.FluxoHeader>
+          <fin.FluxoBody>
+            <fin.FluxoValue>R$ 50.495,84</fin.FluxoValue>
+            <fin.FluxoIconWrapper $color="#0063be">
+              <FaDollarSign />
+            </fin.FluxoIconWrapper>
+          </fin.FluxoBody>
+        </fin.FluxoCard>
+      </fin.ContainerKPIS>
     </>
   );
 }

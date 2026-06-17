@@ -1,4 +1,15 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const slideUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 export const ContainerTitle = styled.div`
   width: 750px;
@@ -183,6 +194,105 @@ export const ContainerLineChart = styled.div`
   border: 1px solid #df6c01;
   border-radius: 12px;
   margin-top: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   box-shadow: 8px 10px 12px rgba(0, 0, 0, 0.15);
+`;
+
+export const ContainerKPIS = styled.div`
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  width: 85%;
+  margin-left: 9%;
+  min-height: 200px;
+  padding: 20px 30px 30px 30px;
+  border: 1px solid #df6c01;
+  border-radius: 12px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background: #fffff0;
+  box-shadow: 8px 10px 12px rgba(0, 0, 0, 0.15);
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+`;
+
+export const FluxoTitleSection = styled.h2`
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #002e58;
+
+  grid-column: 1 / -1;
+  margin-bottom: 10px;
+`;
+
+export const FluxoCard = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 12px;
+  min-height: 120px;
+  background: ${({ $bgColor }) => $bgColor || '#fff'};
+  border: 2px solid ${({ $color }) => $color || '#d9d9d9'};
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+  animation: ${slideUp} 0.5s ease-out forwards;
+  animation-delay: ${({ $delay }) => $delay || '0s'};
+  opacity: 0;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0px 10px 20px ${({ $color }) => $color}40;
+  }
+
+  &::after {
+    content: '${({ $operator }) => $operator || ''}';
+    position: absolute;
+    right: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 32px;
+    font-weight: 800;
+    color: #002e58;
+    font-family: 'Poppins', sans-serif;
+  }
+`;
+
+export const FluxoHeader = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
+export const FluxoLabel = styled.span`
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #252525;
+`;
+
+export const FluxoBody = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+`;
+
+export const FluxoValue = styled.h3`
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: #4a4a4a;
+`;
+
+export const FluxoIconWrapper = styled.div`
+  font-size: 32px;
+  color: ${({ $color }) => $color};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
