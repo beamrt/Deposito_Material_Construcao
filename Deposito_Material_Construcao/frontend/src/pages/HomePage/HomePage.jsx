@@ -15,7 +15,12 @@ export default function HomePage() {
   const arrayBoxes = [
     {
       id: 1,
-      icon: <FaFile className="Relat" />,
+      icon: (
+        <FaFile
+          className="Relat"
+          onClick={() => navigate('/constrular/relatorios')}
+        />
+      ),
       title: 'Relatório',
     },
 
