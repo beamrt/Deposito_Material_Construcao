@@ -16,6 +16,12 @@ def api_estoque_list(request):
         busca = request.GET.get('busca')
         categoria_id = request.GET.get('categoria')
         loja_id = request.GET.get('loja')
+        usuario_logado_id = request.GET.get('usuario_id')
+
+        if usuario_logado_id:
+            usuario = Usuario.objects.filter(pk=usuario_logado_id).first()
+            if usuario and getattr(usuario, 'perfil', '') != 'MASTER':
+                loja_id = usuario.id_loja_id
 
         lista_estoque = Estoque.objects.select_related('id_produto', 'id_loja', 'id_produto__id_categoria').all()
 
@@ -370,3 +376,45 @@ def api_criar_transferencia(request):
             return JsonResponse({'error': str(e)}, status=400)
             
     return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+def api_historico_movimentacoes(request):
+    if request.method == 'GET':
+        loja_id = request.GET.get('loja')
+        produto_id = request.GET.get('produto')
+        tipo_movimentacao = request.GET.get('tipo')
+        data_inicio = request.GET.get('data_inicio')
+        data_fim = request.GET.get('data_fim')
+        
+        logs = AuditLog.objects.filter(tabela_afetada='estoque').select_related('id_usuario').order_by('-data_hora')
+
+        if tipo_movimentacao:
+            logs = logs.filter(acao__icontains=tipo_movimentacao)
+        if data_inicio:
+            logs = logs.filter(data_hora__gte=f"{data_inicio} 00:00:00")
+        if data_fim:
+            logs = logs.filter(data_hora__lte=f"{data_fim} 23:59:59")
+
+        if loja_id or produto_id:
+            estoque_filtros = Q()
+            if loja_id:
+                estoque_filtros &= Q(id_loja=loja_id)
+            if produto_id:
+                estoque_filtros &= Q(id_produto=produto_id)
+                
+            estoques_validos = Estoque.objects.filter(estoque_filtros).values_list('id_estoque', flat=True)
+            logs = logs.filter(id_registro__in=estoques_validos)
+
+        dados_historico = []
+        for log in logs:
+            dados_historico.append({
+                'id_auditoria': log.id_auditoria,
+                'usuario': log.id_usuario.nome if log.id_usuario else 'Sistema',
+                'tipo_movimentacao': log.acao,
+                'detalhes': log.detalhes,
+                'data_hora': log.data_hora
+            })
+
+        return JsonResponse({'historico': dados_historico, 'total_registros': logs.count()}, status=200)
+
+    return JsonResponse({'error': 'Método não permitido.'}, status=405)
