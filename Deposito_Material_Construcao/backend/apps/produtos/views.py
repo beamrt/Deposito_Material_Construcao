@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Produto
 from .serializers import ProdutoSerializer
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Categoria
 
 @api_view(['POST'])
 def cadastrar_produto(request):
@@ -45,3 +49,52 @@ def editar_produto(request, pk):
         return Response(serializer.data, status=200)
     
     return Response(serializer.errors, status=400)
+
+def listar_categorias(request):
+    categorias = Categoria.objects.all().values('id_categoria', 'nome')
+    return JsonResponse(list(categorias), safe=False)
+
+@csrf_exempt
+def cadastrar_categoria(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            nome = data.get('nome')
+            Categoria.objects.create(nome=nome)
+            print(f"Recebido para cadastrar: {nome}")            
+            return JsonResponse({'message': 'Categoria cadastrada com sucesso!'}, status=201)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+            
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+def editar_categoria(request, id_categoria):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            nome = data.get('nome')
+            categoria = Categoria.objects.get(pk=id_categoria)
+            categoria.nome = nome
+            categoria.save()
+            print(f"Editando a categoria ID {id_categoria} para o novo nome: {nome}")
+            
+            return JsonResponse({'message': 'Categoria atualizada com sucesso!'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    
+    return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+@csrf_exempt
+def deletar_categoria(request, id_categoria):
+    if request.method == 'DELETE':
+        try:
+            print(f"Deletando a categoria ID: {id_categoria}")
+            categoria = Categoria.objects.get(pk=id_categoria)
+            categoria.delete()
+            
+            return JsonResponse({'message': 'Categoria deletada com sucesso!'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+            
+    return JsonResponse({'error': 'Método não permitido'}, status=405)

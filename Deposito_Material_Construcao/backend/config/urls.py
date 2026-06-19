@@ -20,6 +20,8 @@ from apps.clientes.views import (
     api_endereco_gerenciar
 )
 
+from apps.estoque import views as estoque_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/login/', api_login, name='api_login'),
@@ -46,5 +48,12 @@ urlpatterns = [
     path('api/clientes/inativar/<int:pk>/', api_cliente_inativar, name='api_cliente_inativar'),
     path('api/clientes/<int:cliente_pk>/enderecos/', api_endereco_gerenciar, name='api_endereco_gerenciar'),
     path('api/clientes/', include('apps.clientes.urls')),
-    path('api/transferencias/', include('apps.transferencias.urls'))
+    path('api/transferencias/', include('apps.transferencias.urls')),
+
+    path('api/estoque/entrada/', estoque_views.api_estoque_entrada, name='api_estoque_entrada'),
+    path('api/estoque/saida/', estoque_views.api_estoque_saida, name='api_estoque_saida'), 
+
+    path('api/estoque/entrada/', estoque_views.api_estoque_entrada, name='api_estoque_entrada'),
+
+    path('api/produtos/', include('apps.produtos.urls'))
 ]

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
-import { FaSearch, FaFilter, FaTruck, FaEdit } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaTruck, FaEdit, FaArrowLeft } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { IoMdCloseCircle } from 'react-icons/io';
@@ -18,6 +18,21 @@ export default function IndexEstoque() {
   const [transferProdutoNome, setTransferProdutoNome] = useState('');
   const [transferQtd, setTransferQtd] = useState('');
 
+  const [addProdutoId, setAddProdutoId] = useState('');
+  const [addFornecedor, setAddFornecedor] = useState('');
+  const [addQtd, setAddQtd] = useState('');
+  const [addMinimo, setAddMinimo] = useState('');
+
+  const [editEstoqueId, setEditEstoqueId] = useState('');
+  const [editProdutoNome, setEditProdutoNome] = useState('');
+  const [editFornecedor, setEditFornecedor] = useState('');
+  const [editQtd, setEditQtd] = useState('');
+  const [listaProdutosCatalogo, setListaProdutosCatalogo] = useState([]);
+  const [editProdutoId, setEditProdutoId] = useState('');
+  const [editMinimo, setEditMinimo] = useState('');
+  
+  const [itemParaExcluir, setItemParaExcluir] = useState(null);
+
   const carregarEstoque = async () => {
     try {
       const resposta = await fetch('http://localhost:8000/api/estoque/');
@@ -30,9 +45,60 @@ export default function IndexEstoque() {
     }
   };
 
+  const carregarProdutosCatalogo = async () => {
+    try {
+      const resposta = await fetch('http://localhost:8000/api/produtos/listar/');   
+      const dados = await resposta.json();
+      if (resposta.ok) {
+        setListaProdutosCatalogo(dados.produtos || dados || []);
+      }
+    } catch (erro) {
+      console.log("Erro ao buscar produtos do catálogo: ", erro);
+      
+    }
+  }
+
   useEffect(() => {
     carregarEstoque();
+    carregarProdutosCatalogo();
   }, []);
+
+  const handleAdicionarAoEstoque = async (e) => {
+    e.preventDefault();
+    
+    const payload = {
+      id_loja: 1, 
+      id_produto: Number(addProdutoId),
+      quantidade: Number(addQtd),
+      estoque_minimo: Number(addMinimo),
+      fornecedor: addFornecedor, 
+      id_usuario: 1
+    };
+
+    try {
+      const resposta = await fetch('http://localhost:8000/api/estoque/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const dados = await resposta.json();
+
+      if (resposta.ok) {
+        alert('Produto adicionado ao estoque com sucesso!'); 
+        setBoxAtiva('');
+        carregarEstoque(); 
+        setAddProdutoId('');
+        setAddFornecedor('');
+        setAddQtd('');
+        setAddMinimo('');
+      } else {
+        alert('Erro: ' + dados.error);
+      }
+    } catch (erro) {
+      alert('Erro ao conectar com o servidor.');
+    }
+  };
 
   const abrirModalTransferencia = (item) => {
     setTransferProdutoId(item.id_produto);
@@ -79,7 +145,7 @@ export default function IndexEstoque() {
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = (id_estoque) => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
@@ -88,7 +154,7 @@ export default function IndexEstoque() {
               <estq.TitleAdd>Excluir Produto</estq.TitleAdd>
             </estq.DivTitle>
             <estq.TitleExclude>
-              Tem certeza que deseja excluir este produto?
+              Tem certeza que deseja excluir este produto do estoque?
             </estq.TitleExclude>
             <estq.ContainerAlerts>
               <estq.TitleExclude className="exclude">Atenção</estq.TitleExclude>
@@ -97,13 +163,43 @@ export default function IndexEstoque() {
               </estq.SubtitleExclude>
             </estq.ContainerAlerts>
             <estq.ButtonAlerts>
-              <estq.ButtonAdd onClick={onClose}>Excluir</estq.ButtonAdd>
+              <estq.ButtonAdd onClick={() => { handleExcluir(id_estoque); onClose();}}>Excluir</estq.ButtonAdd>
               <estq.ButtonCancel onClick={onClose}>Cancelar</estq.ButtonCancel>
             </estq.ButtonAlerts>
           </estq.ContainerExclude>
         );
       },
     });
+  };
+
+  const handleEditar = async (e) => {
+    e.preventDefault();
+    try {
+      const resposta = await fetch(`http://localhost:8000/api/estoque/editar/${editEstoqueId}/`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            fornecedor: editFornecedor, 
+            quantidade: parseInt(editQtd), 
+            estoque_minimo: parseInt(editMinimo) 
+        })
+      });
+      if (resposta.ok) {
+        alert('Alterado com sucesso!');
+        setBoxAtiva('');
+        carregarEstoque();
+      } else { alert('Erro na edição'); }
+    } catch (erro) { alert('Erro de conexão'); }
+  };
+
+  const handleExcluir = async (id) => {
+    try {
+      const resposta = await fetch(`http://localhost:8000/api/estoque/deletar/${id}/`, { method: 'DELETE' });
+      if (resposta.ok) {
+        alert('Excluído do estoque!');
+        carregarEstoque();
+      } else { alert('Erro na exclusão'); }
+    } catch (erro) { alert('Erro de conexão'); }
   };
 
   return (
@@ -192,16 +288,20 @@ export default function IndexEstoque() {
                   <td>{item.categoria}</td>
                   <td>{item.quantidade} un.</td>
                   <td>{item.estoque_minimo} un.</td>
-                  <td style={{ color: item.status_critico ? '#RED' : '#16AEA3' }}>
+                  <td style={{ color: item.status_critico ? 'red' : '#16AEA3' }}>
                     {item.status_critico ? 'Crítico' : 'Estável'}
                   </td>
                   <td>
                     <estq.IconWrapper>
-                      <FaEdit className="edit" onClick={() => setBoxAtiva('ModalEdit')} />
-                      
-                      <FaTruck className="truck" onClick={() => abrirModalTransferencia(item)} />
-                      
-                      <MdDelete className="delete" onClick={() => handleConfirm()} />
+                    <FaEdit className="edit" onClick={() => { 
+                        setEditEstoqueId(item.id_estoque); 
+                        setEditProdutoId(item.id_produto); 
+                        setEditFornecedor(item.fornecedor || ''); 
+                        setEditQtd(item.quantidade); 
+                        setEditMinimo(item.estoque_minimo); 
+                        setBoxAtiva('ModalEdit'); 
+                      }} />                      <FaTruck className="truck" onClick={() => abrirModalTransferencia(item)} />
+                      <MdDelete className="delete" onClick={() => handleConfirm(item.id_estoque)} />
                     </estq.IconWrapper>
                   </td>
                 </tr>
@@ -219,12 +319,171 @@ export default function IndexEstoque() {
         </estq.TableFooter>
       </estq.ContainerTable>
 
+      {boxAtiva === 'ModalAdd' && (
+        <>
+          <estq.BackgroundOpacity onClick={() => setBoxAtiva('')}>
+            <estq.DivAdd onClick={(e) => e.stopPropagation()}>
+              <estq.AddWrapper>
+                <estq.DivClose>
+                  <FaArrowLeft
+                    className="close"
+                    onClick={() => setBoxAtiva('')}
+                  />
+                </estq.DivClose>
+
+                <estq.DivTitle>
+                  <estq.TitleAdd>Adicionar Produto</estq.TitleAdd>
+                </estq.DivTitle>
+
+                <estq.SearchProduct>
+                  <span>Produto</span>
+
+                  <estq.SelectOrder>
+                    <estq.Select defaultValue="inicia">
+                      <option value="inicia" disabled>
+                        Inicia com
+                      </option>
+                    </estq.Select>
+                    <estq.Select defaultValue="contem">
+                      <option value="contem" disabled>
+                        Contém
+                      </option>
+                    </estq.Select>
+                  </estq.SelectOrder>
+                  <estq.InputWrapper>
+                    <estq.Select 
+                      value={addProdutoId}
+                      onChange={(e) => setAddProdutoId(e.target.value)}
+                      style={{ width: '100%', border: 'none', outline: 'none', background: 'transparent' }}
+                    >
+                      <option value="" disabled>Selecione do Catálogo...</option>
+                      {listaProdutosCatalogo.map((prod) => (
+                        <option key={prod.id_produto} value={prod.id_produto}>
+                          {prod.nome_produto}
+                        </option>
+                      ))}
+                    </estq.Select>
+                    
+                    <estq.DivSearch className="searchAdd">
+                      <FaSearch className="search" />
+                    </estq.DivSearch>
+                  </estq.InputWrapper>
+                </estq.SearchProduct>
+
+                <estq.SearchProduct>
+                  <span>Fornecedor</span>
+
+                  <estq.InputWrapper>
+                    <estq.Input 
+                      placeholder="Buscar Fornecedor" 
+                      value={addFornecedor}
+                      onChange={(e) => setAddFornecedor(e.target.value)}
+                    />
+                    <estq.DivSearch className="searchAdd">
+                      <FaSearch className="search" />
+                    </estq.DivSearch>
+                  </estq.InputWrapper>
+                </estq.SearchProduct>
+
+                <estq.SearchProduct>
+                  <span>Quantidade</span>
+                  <estq.SelectOrder>
+                    <estq.Input 
+                      type="number" 
+                      value={addQtd}
+                      onChange={(e) => setAddQtd(e.target.value)}
+                    />
+                  </estq.SelectOrder>
+                </estq.SearchProduct>
+
+                <estq.SearchProduct>
+                  <span>Estoque Mínimo</span>
+                  <estq.SelectOrder>
+                    <estq.Input 
+                      type="number" 
+                      value={addMinimo}
+                      onChange={(e) => setAddMinimo(e.target.value)}
+                    />
+                  </estq.SelectOrder>
+                </estq.SearchProduct>
+
+                <estq.DivButtonsAdd>
+                  <estq.ButtonAdd onClick={handleAdicionarAoEstoque}>Salvar</estq.ButtonAdd>
+                  <estq.ButtonCancel onClick={() => setBoxAtiva('')}>
+                    Cancelar
+                  </estq.ButtonCancel>
+                </estq.DivButtonsAdd>
+              </estq.AddWrapper>
+            </estq.DivAdd>
+          </estq.BackgroundOpacity>
+        </>
+      )}
+
+      {boxAtiva === 'ModalEdit' && (
+        <>
+          <estq.BackgroundOpacity onClick={() => setBoxAtiva('')}>
+            <estq.DivAdd onClick={(e) => e.stopPropagation()}>
+              <estq.AddWrapper>
+                <estq.DivClose>
+                  <FaArrowLeft className="close" onClick={() => setBoxAtiva('')} />
+                </estq.DivClose>
+
+                <estq.DivTitle>
+                  <estq.TitleAdd>Editar Estoque</estq.TitleAdd>
+                </estq.DivTitle>
+
+                <estq.Form onSubmit={handleEditar}>
+                  <estq.SearchProduct>
+                    <span>Fornecedor</span>
+                    <estq.InputWrapper>
+                      <estq.Input 
+                        placeholder="Nome do Fornecedor" 
+                        value={editFornecedor}
+                        onChange={(e) => setEditFornecedor(e.target.value)}
+                        style={{width: '100%', border: 'none', outline: 'none', background: 'transparent'}}
+                      />
+                    </estq.InputWrapper>
+                  </estq.SearchProduct>
+
+                  <estq.SearchProduct>
+                    <span>Quantidade</span>
+                    <estq.SelectOrder>
+                      <estq.Input 
+                        type="number" 
+                        value={editQtd}
+                        onChange={(e) => setEditQtd(e.target.value)}
+                      />
+                    </estq.SelectOrder>
+                  </estq.SearchProduct>
+
+                  <estq.SearchProduct>
+                    <span>Estoque Mínimo</span>
+                    <estq.SelectOrder>
+                      <estq.Input 
+                        type="number" 
+                        value={editMinimo}
+                        onChange={(e) => setEditMinimo(e.target.value)}
+                      />
+                    </estq.SelectOrder>
+                  </estq.SearchProduct>
+
+                  <estq.DivButtonsAdd>
+                    <estq.ButtonAdd type="submit">Salvar Alterações</estq.ButtonAdd>
+                    <estq.ButtonCancel onClick={() => setBoxAtiva('')} type="button">Cancelar</estq.ButtonCancel>
+                  </estq.DivButtonsAdd>
+                </estq.Form>
+              </estq.AddWrapper>
+            </estq.DivAdd>
+          </estq.BackgroundOpacity>
+        </>
+      )}
+
       {boxAtiva === 'ModalTransfer' && (
         <>
           <estq.BackgroundOpacity onClick={() => setBoxAtiva('')}>
             <estq.DivBox onClick={(e) => e.stopPropagation()}>
               <estq.DivCloseX>
-                <IoMdCloseCircle className="closeX" onClick={() => setBoxAtiva('')} />
+                <IoMdCloseCircle className="closeX" onClick={() => setBoxAtiva('')} style={{ cursor: 'pointer' }} />
               </estq.DivCloseX>
 
               <estq.DivTitle>
@@ -256,7 +515,7 @@ export default function IndexEstoque() {
 
                 <estq.DivButtonsAdd>
                   <estq.ButtonAdd onClick={handleTransferir}>Transferir</estq.ButtonAdd>
-                  <estq.ButtonCancel onClick={() => setBoxAtiva('')}>Cancelar</estq.ButtonCancel>
+                  <estq.ButtonCancel onClick={() => setBoxAtiva('')} type="button">Cancelar</estq.ButtonCancel>
                 </estq.DivButtonsAdd>
               </estq.Form>
             </estq.DivBox>
