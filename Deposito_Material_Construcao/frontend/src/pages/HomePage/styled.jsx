@@ -5,33 +5,6 @@ export const Background = styled.div`
   height: 150vh;
 `;
 
-export const Footer = styled.div`
-  width: 100%;
-  background: #004787;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid #d9d9d9;
-`;
-
-export const Logo = styled.h1`
-  color: #fffff0;
-  font-family: 'Montserrat', sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 800;
-  font-style: normal;
-  font-size: 20px;
-`;
-
-export const Subtitle = styled.h3`
-  color: #fffff0;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 200;
-  font-style: normal;
-  font-size: 17px;
-`;
-
 export const DivNav = styled.div`
   display: flex;
   align-items: center;

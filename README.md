@@ -60,6 +60,7 @@ Sistema desenvolvido para auxiliar na gestão e organização de lojas de materi
   <img alt="MongoDB" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" />
   <img alt="Git" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" />
   <img alt="Python" height="50" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" />
+
 </div>
 
 <div align="center" style="margin-top: 10px;">
@@ -79,7 +80,7 @@ Sistema desenvolvido para auxiliar na gestão e organização de lojas de materi
 <h3>
   <img 
     src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/star.svg" 
-    width="25px"
+    width="22px"
     style="filter: invert(70%) sepia(80%) saturate(800%) hue-rotate(350deg);"
   >
   Funcionalidades

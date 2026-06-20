@@ -2,6 +2,7 @@ import React from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FaLinkedin } from 'react-icons/fa';
 import { FaGithub } from 'react-icons/fa';
+import PropTypes from 'prop-types';
 
 import {
   DivFooter,
@@ -19,7 +20,7 @@ import {
   WrapperInfo,
 } from './styled';
 
-export default function Footer() {
+export default function Footer({ $isDashboard }) {
   const arrayCards = [
     {
       id: 1,
@@ -89,7 +90,7 @@ export default function Footer() {
 
   return (
     <>
-      <DivFooter>
+      <DivFooter $isDashboard={$isDashboard}>
         <DivTop>
           {arrayCards.map((card) => (
             <Cards key={card.id}>
@@ -133,3 +134,7 @@ export default function Footer() {
     </>
   );
 }
+
+Footer.propTypes = {
+  $isDashboard: PropTypes.bool,
+};

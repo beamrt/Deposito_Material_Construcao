@@ -1,12 +1,15 @@
 import json
 import uuid
 import re
+import random
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db import IntegrityError
+from django.core.mail import send_mail
+from django.conf import settings
 
 from apps.auditoria.models import AuditLog
 from .models import Usuario, UsuarioLoja
@@ -25,15 +28,17 @@ def api_login(request):
     except Exception:
         return JsonResponse({'error': 'JSON inválido'}, status=400)
 
-    if not email or not senha:
+    if not email or not senha or not id_loja_selecionada:
         return JsonResponse({'error': 'E-mail, senha e unidade são obrigatórios'}, status=400)
 
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     ip_cliente = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
 
-    user = authenticate(request, username=email, password=senha)
+    # Busca o usuário pelo e-mail enviado
+    user = Usuario.objects.filter(email=email).first()
 
-    if user is not None:
+    # Valida a senha usando o método nativo de criptografia do Django
+    if user is not None and user.check_password(senha):
         if not user.ativo:
             AuditLog.objects.create(
                 id_usuario=user, acao="Tentativa de login", tabela_afetada="usuario", 
@@ -41,8 +46,14 @@ def api_login(request):
             )
             return JsonResponse({'error': 'Esta conta foi inativada pelo administrador.'}, status=403)
         
+        # Verifica se o ID enviado é um dos IDs válidos (1, 2 ou 3)
+        if int(id_loja_selecionada) not in [1, 2, 3]:
+            return JsonResponse({'error': 'Unidade organizacional inválida ou não encontrada.'}, status=404)
+        
         pertence_a_loja = user.lojas.filter(id_loja=id_loja_selecionada).exists()
-        if not pertence_a_loja and user.tipo_usuario != 'MASTER':
+        
+        # Modificado: ADMIN agora também tem permissão total livre para transitar entre as lojas 1, 2 e 3
+        if not pertence_a_loja and user.tipo_usuario not in ['ADMIN', 'MASTER']:
             AuditLog.objects.create(
                 id_usuario=user, acao="Login Negado - Unidade Incorreta", tabela_afetada="usuario", 
                 detalhes=f"Tentou acessar a unidade {id_loja_selecionada} sem permissão. IP: {ip_cliente}"
@@ -189,7 +200,7 @@ def api_usuario_detail(request, pk):
         user_target.save()
         
         AuditLog.objects.create(id_usuario=request.user, acao="Editou usuário", tabela_afetada="usuario", id_registro=user_target.id_usuario)
-        return JsonResponse({'message': 'Usuário atualizado com sucesso'})
+        return JsonResponse({'message': 'Usuário updated com sucesso'})
 
     elif request.method == 'DELETE':
         user_target.ativo = False
@@ -213,22 +224,92 @@ def api_recuperar_senha(request):
         return JsonResponse({'error': 'JSON inválido'}, status=400)
         
     user = Usuario.objects.filter(email=email).first()
-    if user:
-        token = uuid.uuid4().hex
+    resposta_padrao = {'message': 'Se o e-mail informado estiver cadastrado, um código de verificação foi enviado.'}
+    
+    if user and user.ativo:
+        pin = str(random.randint(100000, 999999))
+        
+        request.session[f'reset_pin_{email}'] = pin
+        request.session.set_expiry(600)
+        
+        try:
+            send_mail(
+                subject='🔑 Código de Recuperação - Construshop',
+                message=f'Olá, {user.nome}.\n\nSeu código PIN de segurança para redefinir a sua senha é: {pin}\n\nEste código é válido por 10 minutos.',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            print(f"ERRO SMTP GMAIL: {e}")
+            return JsonResponse({'error': 'Falha interna ao disparar o e-mail de recuperação.'}, status=500)
+            
+        return JsonResponse(resposta_padrao)
+        
+    return JsonResponse(resposta_padrao)
+
+@csrf_exempt
+def api_redefinir_senha(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método não permitido'}, status=405)
+        
+    try:
+        data = json.loads(request.body)
+        email = data.get('email')
+        pin_digitado = data.get('pin')
+        nova_senha = data.get('nova_senha')
+        confirmacao_senha = data.get('confirmacao_senha')
+    except Exception:
+        return JsonResponse({'error': 'JSON inválido'}, status=400)
+        
+    if not email or not pin_digitado or not nova_senha or not confirmacao_senha:
+        return JsonResponse({'error': 'Todos os campos são obrigatórios.'}, status=400)
+        
+    if nova_senha != confirmacao_senha:
+        return JsonResponse({'error': 'A nova senha e a confirmação não coincidem.'}, status=400)
+        
+    if len(nova_senha) < 8 or not re.search(r"[A-Z]", nova_senha) or not re.search(r"[0-9]", nova_senha):
         return JsonResponse({
-            'message': 'Link de redefinição enviado para o e-mail informado.',
-            'token_simulado': token,
-            'url_front_sugerida': f'http://localhost:3000/reset-password?token={token}'
-        })
-    return JsonResponse({'message': 'Se o e-mail existir no sistema, um link foi enviado.'})
+            'error': 'A nova senha deve possuir no mínimo 8 caracteres, contendo ao menos 1 letra maiúscula e 1 número.'
+        }, status=400)
+
+    session_key = f'reset_pin_{email}'
+    pin_salvo = request.session.get(session_key)
+    
+    if not pin_salvo or pin_salvo != str(pin_digitado):
+        return JsonResponse({'error': 'Código PIN inválido ou expirado.'}, status=400)
+        
+    try:
+        user = Usuario.objects.get(email=email)
+        
+        user.set_password(nova_senha)
+        user.save()
+        
+        del request.session[session_key]
+        
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        ip_cliente = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+        
+        AuditLog.objects.create(
+            id_usuario=user,
+            acao='SENHA_REDEFINIDA_SUCESSO',
+            tabela_afetada='usuario',
+            id_registro=user.id_usuario,
+            detalhes=f"IP: {ip_cliente} | Senha redefinida com sucesso via validação de PIN por e-mail."
+        )
+        
+        return JsonResponse({'message': 'Sua senha foi atualizada com sucesso no banco de dados!'})
+        
+    except Usuario.DoesNotExist:
+        return JsonResponse({'error': 'Usuário não localizado.'}, status=404)
 
 @csrf_exempt
 def api_alternar_unidade(request):
     if not request.user.is_authenticated:
         return JsonResponse({'error': 'Não autorizado'}, status=401)
         
-    if request.user.tipo_usuario != 'MASTER':
-        return JsonResponse({'error': 'Apenas usuários MASTER podem alternar entre unidades corporativas.'}, status=403)
+    if request.user.tipo_usuario not in ['MASTER', 'ADMIN']:
+        return JsonResponse({'error': 'Apenas usuários administradores podem alternar entre unidades corporativas.'}, status=403)
         
     if request.method != 'POST':
         return JsonResponse({'error': 'Método não permitido'}, status=405)
@@ -254,9 +335,9 @@ def api_alternar_unidade(request):
     
     AuditLog.objects.create(
         id_usuario=request.user,
-        acao="Troca de Unidade (Master)",
+        acao="Troca de Unidade",
         tabela_afetada="usuario",
-        detalhes=f"IP: {ip_cliente} | Mudou da unidade {antigo_tenant} para a unidade {nova_loja_id}"
+        details=f"IP: {ip_cliente} | Mudou da unidade {antigo_tenant} para a unidade {nova_loja_id}"
     )
     
     return JsonResponse({

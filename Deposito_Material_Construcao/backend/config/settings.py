@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os  # Garante que o 'import os' exista no topo do arquivo
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -68,12 +69,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-import os  # Garanta que o 'import os' exista no topo do arquivo se não tiver
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Usando os.path para forçar o caminho absoluto até a pasta apps
+        
         'DIRS': [os.path.join(BASE_DIR, 'apps')],  
         'APP_DIRS': True,
         'OPTIONS': {
@@ -96,9 +95,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.environ.get('DB_NAME', 'construshop'),
+        'NAME': os.environ.get('DB_NAME', 'deposito_db'),
         'USER': os.environ.get('DB_USER', 'root'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'rootpassword'),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '3306'),
     }
@@ -154,5 +153,26 @@ CORS_ALLOWED_ORIGINS = [
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
-SESSION_COOKIE_AGE = 1800  # Tempo em segundos para fecha a tela (30 minutos)
-SESSION_SAVE_EVERY_REQUEST = True  
+SESSION_COOKIE_AGE = 1800  
+SESSION_SAVE_EVERY_REQUEST = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
+EMAIL_HOST_USER = 'marquinhosrodrig1022@gmail.com'  
+EMAIL_HOST_PASSWORD = 'iystzohqkpuyagpj'     
+
+
+DEFAULT_FROM_EMAIL = f'Sistema Construshop <{EMAIL_HOST_USER}>'
+
+
+import sys
+if 'test' in sys.argv and DATABASES.get('default', {}).get('NAME') == ':memory:':
+    TEST_RUNNER = 'clientes.runner.ManagedModelTestRunner'
+    
+    
+
+TEST_RUNNER = 'apps.clientes.runner.ManagedModelTestRunner'

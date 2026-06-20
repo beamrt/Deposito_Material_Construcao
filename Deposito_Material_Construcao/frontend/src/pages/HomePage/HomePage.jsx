@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 
 import * as home from './styled';
 import Footer from '../../components/Footer/Footer';
+import Header from '../../components/Header/Header';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -16,32 +17,33 @@ export default function HomePage() {
       id: 1,
       icon: <FaFile className="Relat" />,
       title: 'Relatório',
+      path: '/constrular/relatorios',
     },
 
     {
       id: 2,
       icon: <FaChartLine className="Dash" />,
       title: 'Dashboard',
+      path: '/constrular/dashboard',
     },
     {
       id: 3,
       icon: <FaDropbox className="Box" />,
       title: 'Estoque',
+      path: '/constrular/estoque',
     },
     {
       id: 4,
       icon: <TbSettingsCog className="Settings" />,
       title: 'Configurações',
+      path: '/constrular/usuarios',
     },
   ];
 
   return (
     <>
       <home.Background>
-        <home.Footer>
-          <home.Logo>Construshop</home.Logo>
-          <home.Subtitle>Matriz - Constrular</home.Subtitle>
-        </home.Footer>
+        <Header />
 
         <home.DivNav>
           <home.Navbar>
@@ -54,13 +56,19 @@ export default function HomePage() {
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Dashboard'}
-                onClick={() => setAbaAtiva('Dashboard')}
+                onClick={() => {
+                  setAbaAtiva('Dashboard');
+                  navigate('/constrular/dashboard');
+                }}
               >
                 Dashboard
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Estoque'}
-                onClick={() => setAbaAtiva('Estoque')}
+                onClick={() => {
+                  setAbaAtiva('Estoque');
+                  navigate('/constrular/estoque');
+                }}
               >
                 Estoque
               </home.List>
@@ -81,7 +89,10 @@ export default function HomePage() {
               </home.List>
               <home.List
                 $isActive={abaAtiva === 'Finanças'}
-                onClick={() => setAbaAtiva('Finanças')}
+                onClick={() => {
+                  setAbaAtiva('Finanças');
+                  navigate('/constrular/financas');
+                }}
               >
                 Finanças
               </home.List>
@@ -100,7 +111,7 @@ export default function HomePage() {
 
         <home.DivBoxes>
           {arrayBoxes.map((card) => (
-            <home.Boxes key={card.id}>
+            <home.Boxes key={card.id} onClick={() => navigate(card.path)}>
               {card.icon}
               <p>{card.title}</p>
             </home.Boxes>
