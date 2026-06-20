@@ -43,6 +43,14 @@
   </table>
   </div>
 
+<div align="center">
+<h3>Objetivo</h3>
+
+<p>
+Sistema desenvolvido para auxiliar na gestão e organização de lojas de materiais de construção.
+</p>
+</div>
+
 <div align="center" style="margin-top: 10px;">
 <h3>Tecnologias Utilizadas</h3>
 
@@ -59,4 +67,105 @@
 
   <p>O protótipo da aplicação foi desenvolvido no Figma e pode ser acessado pelo link abaixo:</p>
   🔗 <a href= "https://www.figma.com/design/VOCBSYt2Mr9DG8f7N7uGnI/Constrular?node-id=0-1&t=4pu5A6wnHHWcO5i8-1">Clique Aqui</a></td>
+</div>
+
+<div align="center">
+
+
+<hr>
+
+<div align="center">
+
+<h3>
+  <img 
+    src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.x/svgs/solid/star.svg" 
+    width="25px"
+    style="filter: invert(70%) sepia(80%) saturate(800%) hue-rotate(350deg);"
+  >
+  Funcionalidades
+</h3>
+
+<table>
+<tr>
+<td width="50%" align="center">
+
+<h4>Produtos</h4>
+
+Cadastro, edição e exclusão de produtos.<br>
+Busca e aplicação de filtros.<br>
+Controle de categorias e tipos.
+
+</td>
+
+<td width="50%" align="center">
+
+<h4>Estoque</h4>
+
+Controle de quantidade disponível.<br>
+Definição de estoque mínimo.<br>
+Alertas de baixo estoque.
+
+</td>
+</tr>
+
+
+<tr>
+<td width="50%" align="center">
+
+<h4>PDV</h4>
+
+Seleção de produtos.<br>
+Gerenciamento do carrinho.<br>
+Finalização de vendas.
+
+</td>
+
+<td width="50%" align="center">
+
+<h4>Usuários</h4>
+
+Cadastro e edição de usuários.<br>
+Controle de permissões.<br>
+Gerenciamento por filial.
+
+</td>
+</tr>
+
+
+<tr>
+<td width="50%" align="center">
+
+<h4>Filiais</h4>
+
+Controle de múltiplas lojas.<br>
+Associação de usuários e produtos.<br>
+Gestão das unidades.
+
+</td>
+
+<td width="50%" align="center">
+
+<h4>Relatórios</h4>
+
+Relatórios de vendas e estoque.<br>
+Consulta por período.<br>
+Exportação de informações.
+
+</td>
+</tr>
+
+
+<tr>
+<td colspan="2" align="center">
+
+<h4>Gestão Financeira</h4>
+
+Controle financeiro, associação automática das vendas,
+cálculo de lucro e prejuízo.
+
+</td>
+</tr>
+
+</table>
+
 </div>
