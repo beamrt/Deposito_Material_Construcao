@@ -9,6 +9,8 @@ from apps.produtos.models import Produto
 from apps.lojas.models import Loja
 from apps.usuarios.models import Usuario
 from django.utils import timezone
+from pymongo import MongoClient
+
 
 @csrf_exempt
 def api_estoque_list(request):
@@ -418,3 +420,48 @@ def api_historico_movimentacoes(request):
         return JsonResponse({'historico': dados_historico, 'total_registros': logs.count()}, status=200)
 
     return JsonResponse({'error': 'Método não permitido.'}, status=405)
+
+@csrf_exempt
+def api_kpis_dashboard_mongo(request):
+    """
+    Endpoint para alimentar o Dashboard React em tempo real com dados do MongoDB.
+    """
+    if request.method == 'GET':
+        try:
+            client = MongoClient('mongodb://localhost:27017/')
+            db = client['constrular_dashboard']
+            vendas = db['vendas']
+
+            pipeline_kpis = [
+                {"$group": {
+                    "_id": None,
+                    "faturamento_total": {"$sum": "$valor_total_venda"},
+                    "total_pedidos": {"$sum": 1}
+                }},
+                {"$project": {
+                    "_id": 0,
+                    "faturamento_total": {"$round": ["$faturamento_total", 2]},
+                    "total_pedidos": 1
+                }}
+            ]
+            
+            resultado = list(vendas.aggregate(pipeline_kpis))
+
+            total_produtos = len(vendas.distinct("itens.produto_id"))
+
+            dados = {
+                "faturamento_total": 0,
+                "total_pedidos": 0,
+                "total_produtos": total_produtos
+            }
+
+            if resultado:
+                dados["faturamento_total"] = resultado[0].get("faturamento_total", 0)
+                dados["total_pedidos"] = resultado[0].get("total_pedidos", 0)
+
+            return JsonResponse(dados, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+            
+    return JsonResponse({'error': 'Método não permitido'}, status=405)

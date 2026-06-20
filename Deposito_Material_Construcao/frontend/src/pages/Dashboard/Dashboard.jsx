@@ -5,7 +5,8 @@ import Footer from '../../components/Footer/Footer';
 import * as dash from './styled';
 import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
-import React from 'react';
+import React, { useState, useEffect } from 'react'; 
+
 import GraficoProdutos from '../../components/Charts/BarChartProduct';
 import GraficoEstoque from '../../components/Charts/PizzaChartEstoque';
 import GraficoSituacaoEstoque from '../../components/Charts/DonutChartEstoque';
@@ -15,32 +16,62 @@ import GraficoPedidosDiarios from '../../components/Charts/BarChartPedidos';
 import GraficoEvolucaoVendas from '../../components/Charts/LineChart';
 
 export default function Dashboard() {
+  const [dadosAPI, setDadosAPI] = useState({
+    faturamento_total: 0,
+    total_produtos: 0, 
+    total_pedidos: 0,
+    filiais_ativas: 2, 
+    funcionarios_ativos: 21 
+  });
+
+  useEffect(() => {
+    async function buscarDadosKpis() {
+      try {
+        const resposta = await fetch('http://localhost:8000/api/kpis'); 
+        if (resposta.ok) {
+          const json = await resposta.json();
+          setDadosAPI({
+            faturamento_total: json.faturamento_total || 0,
+            total_produtos: json.total_produtos || 207,
+            total_pedidos: json.total_pedidos || 0,
+            filiais_ativas: 2, 
+            funcionarios_ativos: 21
+          });
+        }
+      } catch (erro) {
+        console.error('Erro ao buscar dados do Dashboard:', erro);
+      }
+    }
+
+    buscarDadosKpis();
+  }, []); 
+
   const dashKPIS = [
     {
       id: 1,
       title: 'Vendas Hoje',
-      content: 'R$ 12.890,00',
-      subtitle: '18% de ontem',
+      content: `R$ ${dadosAPI.faturamento_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      subtitle: 'Atualizado em tempo real',
     },
     {
       id: 2,
       title: 'Produtos Cadastrados',
-      content: '207',
+      content: dadosAPI.total_produtos,
     },
     {
       id: 3,
       title: 'Pedidos Hoje',
-      content: '45',
+      content: dadosAPI.total_pedidos,
     },
     {
       id: 4,
-      title: 'Filiais Ativa',
-      content: '2',
+      title: 'Filiais Ativas',
+      content: dadosAPI.filiais_ativas,
     },
     {
       id: 5,
       title: 'Funcionários Ativos',
-      content: '21',
+      content: dadosAPI.funcionarios_ativos,
     },
   ];
 
@@ -63,14 +94,14 @@ export default function Dashboard() {
         </dash.DivCards>
         <dash.DivCards>
           <dash.DivSelects>
-            <dash.Select>
-              <option selected disabled>
+            <dash.Select defaultValue="13/06/2026">
+              <option disabled value="13/06/2026">
                 13/06/2026
               </option>
             </dash.Select>
             <span>até</span>
-            <dash.Select>
-              <option selected disabled>
+            <dash.Select defaultValue="20/06/2026">
+              <option disabled value="20/06/2026">
                 20/06/2026
               </option>
             </dash.Select>
@@ -78,8 +109,8 @@ export default function Dashboard() {
         </dash.DivCards>
         <dash.DivCards>
           <dash.DivSelects>
-            <dash.Select>
-              <option selected disabled>
+            <dash.Select defaultValue="Filial">
+              <option disabled value="Filial">
                 Filial
               </option>
             </dash.Select>
