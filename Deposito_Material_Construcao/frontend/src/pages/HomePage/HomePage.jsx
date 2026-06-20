@@ -72,12 +72,12 @@ export default function HomePage() {
               >
                 Estoque
               </home.List>
-              <home.List
+              {/* <home.List
                 $isActive={abaAtiva === 'Venda'}
                 onClick={() => setAbaAtiva('Venda')}
               >
                 Venda
-              </home.List>
+              </home.List> */}
               <home.List
                 $isActive={abaAtiva === 'Produtos'}
                 onClick={() =>

@@ -21,11 +21,11 @@ export const Navbar = styled.div`
   background: rgba(0, 0, 0, 0.1);
   -webkit-backdrop-filter: blur(15px);
   backdrop-filter: blur(15px);
-  width: 90%;
+  width: 80%;
   height: 75px;
   border-radius: 25px;
   border: 1px solid rgba(0, 0, 0, 0.3);
-  box-shadow: 6px 10px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 10px 12px rgba(0, 0, 0, 0.15);
 `;
 
 export const Unorderedlist = styled.ul`

@@ -5,7 +5,6 @@ import { FaChartLine } from 'react-icons/fa';
 import { FaDropbox } from 'react-icons/fa';
 import { TbSettingsCog } from 'react-icons/tb';
 import { FaFile } from 'react-icons/fa';
-import { FaCartArrowDown } from 'react-icons/fa';
 import { FaMoneyBill } from 'react-icons/fa';
 import { FaProductHunt } from 'react-icons/fa';
 
@@ -13,7 +12,6 @@ import * as side from './styled';
 
 export default function Sidebar() {
   const navigate = useNavigate();
-  // const [abaAtiva, setAbaAtiva] = useState('');
   const location = useLocation();
 
   const abaAtiva = location.pathname;
@@ -58,10 +56,10 @@ export default function Sidebar() {
         <FaFile className="file" />
         <side.MenuText>Relatórios</side.MenuText>
       </side.MenuItem>
-      <side.MenuItem $isActive={abaAtiva === 'cart'}>
+      {/* <side.MenuItem $isActive={abaAtiva === 'cart'}>
         <FaCartArrowDown className="cart" />
         <side.MenuText>Vendas</side.MenuText>
-      </side.MenuItem>
+      </side.MenuItem> */}
       <side.MenuItem
         $isActive={abaAtiva.includes('/constrular/financas')}
         onClick={() => navigate('/constrular/financas')}
