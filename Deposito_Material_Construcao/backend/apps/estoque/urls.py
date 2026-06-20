@@ -10,5 +10,6 @@ urlpatterns = [
     path('dashboard/', views.api_dashboard_estoque, name='dashboard_estoque'),
     path('movimentar/', views.api_movimentar_estoque, name='movimentar_estoque'),
     path('entrada/', views.api_estoque_entrada, name='estoque_entrada'),
-    path('saida/', views.api_estoque_saida, name='estoque_saida')
+    path('saida/', views.api_estoque_saida, name='estoque_saida'),
+    path('kpis/', views.api_kpis_dashboard_mongo, name='kpis_dashboard_mongo')
 ]
